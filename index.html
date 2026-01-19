@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Aula 28: O Que Teria Sido Diferente? – Condicional Tipo 3</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        /* --- RESET E BASE --- */
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f2f5;
+            color: #333;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 20px 15px;
+            min-height: 100vh;
+            box-shadow: 0 0 20px rgba(0,0,0,0.05);
+        }
+
+        /* --- TIPOGRAFIA --- */
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            font-size: 1.5rem;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #3498db;
+            line-height: 1.3;
+        }
+        
+        h2, h3, h4 { color: #2c3e50; margin-top: 25px; }
+        h3 { color: #34495e; font-size: 1.25rem; border-left: 4px solid #3498db; padding-left: 10px; }
+        h4 { color: #c0392b; font-size: 1.1rem; margin-bottom: 10px; }
+        
+        p, li { font-size: 1rem; margin-bottom: 10px; }
+        
+        .emoji-large { font-size: 1.5rem; }
+        .emoji-small { font-size: 1.2rem; }
+
+        /* --- DESTAQUES E CAIXAS --- */
+        .theme-intro, .nota-gramatical, .nota-dica, .secao-exercicios, .extra-task {
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+            border-left: 5px solid transparent;
+        }
+
+        .theme-intro { background-color: #eaf2f8; border-left-color: #3498db; }
+        .nota-gramatical { background-color: #ecf0f1; border-left-color: #f39c12; }
+        .nota-dica { background-color: #e8f6f3; border-left-color: #16a085; }
+        .extra-task { background-color: #f5eef8; border-left-color: #9b59b6; }
+        .secao-exercicios { background-color: #fff8e1; border-left-color: #f39c12; }
+
+        .example-word { color: #2980b9; font-weight: 700; }
+        
+        /* --- ESTILOS DE IPA E PRONÚNCIA --- */
+        code, .ipa-symbol {
+            font-family: 'Roboto Mono', monospace;
+            background-color: #f1f1f1;
+            padding: 2px 4px;
+            border-radius: 4px;
+            color: #e74c3c;
+            font-size: 0.9em;
+        }
+        
+        .character-portuguese-phonetics {
+            display: block;
+            color: #27ae60;
+            font-style: italic;
+            font-size: 0.85em;
+            margin-top: 2px;
+        }
+
+        /* --- BOTÃO DE NAVEGAÇÃO --- */
+        .nav-btn {
+            display: block;
+            width: 100%;
+            background-color: #34495e;
+            color: white;
+            text-align: center;
+            padding: 12px;
+            margin: 10px 0;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+        }
+        .nav-btn:hover { background-color: #2c3e50; }
+
+        /* --- TABELAS OTIMIZADAS PARA MOBILE --- */
+        .table-responsive-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            border: 1px solid #eee;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 100%; 
+        }
+
+        th {
+            background-color: #34495e;
+            color: white;
+            padding: 10px;
+            font-size: 0.9rem;
+            text-align: left;
+        }
+
+        td {
+            padding: 12px 10px;
+            border-bottom: 1px solid #eee;
+            vertical-align: top;
+        }
+
+        tr:nth-child(even) { background-color: #f9f9f9; }
+
+        .details-cell {
+            font-size: 0.9rem;
+            color: #555;
+        }
+        .details-translation {
+            display: block;
+            margin-top: 6px;
+            padding-top: 6px;
+            border-top: 1px dashed #ddd;
+            color: #444;
+            font-weight: 500;
+        }
+
+        /* --- BOTÃO DE ÁUDIO GERAL --- */
+        .audio-btn-inline {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            vertical-align: middle;
+            margin-left: 5px;
+            padding: 0 5px;
+        }
+        
+        /* --- VOCABULÁRIO: GRID DE CARDS (Mobile First) --- */
+        .vocab-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        @media (min-width: 600px) {
+            .vocab-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .vocab-item {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+            transition: transform 0.2s;
+        }
+        
+        .vocab-item:active { transform: scale(0.98); background-color: #fdfdfd; }
+
+        .vocab-text {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .vocab-en {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+
+        .vocab-ipa {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 0.85rem;
+            color: #e67e22;
+        }
+
+        .vocab-pt {
+            font-size: 0.8rem;
+            color: #7f8c8d;
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            margin-top: 2px;
+        }
+
+        .audio-btn-round {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            cursor: pointer;
+            flex-shrink: 0;
+            margin-left: 10px;
+            box-shadow: 0 2px 5px rgba(52, 152, 219, 0.3);
+        }
+        
+        .audio-btn-round:active { background-color: #2980b9; }
+
+        /* --- GABARITO E EXERCÍCIOS --- */
+        .fill-in-blank {
+            display: inline-block;
+            min-width: 60px;
+            border-bottom: 2px solid #3498db;
+            text-align: center;
+            color: #3498db;
+            font-weight: bold;
+            padding: 0 5px;
+        }
+
+        details.gabarito {
+            margin-top: 20px;
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 10px;
+        }
+        
+        details.gabarito summary {
+            font-weight: bold;
+            cursor: pointer;
+            color: #2c3e50;
+            padding: 10px;
+            list-style: none;
+        }
+        
+        details.gabarito summary::after { content: " 👇"; }
+        details.gabarito[open] summary::after { content: " 👆"; }
+
+        .gabarito-content {
+            padding: 15px;
+            border-top: 1px solid #ddd;
+            color: #555;
+        }
+
+        .quiz-options {
+            list-style-type: lower-alpha;
+            padding-left: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Botão Navegação Topo -->
+        <button class="nav-btn" onclick="alert('Voltar ao Menu Principal')">⬅ Voltar ao Menu</button>
+
+        <h1>Aula 28: O Que Teria Sido Diferente? – Condicional Tipo 3 (Hipotéticas no Passado) <span class="emoji-large">⏳🤔</span><br><span style="font-size: 0.8em; font-weight: normal;">(What Would Have Been Different? – Third Conditional (Past Hypotheticals))</span></h1>
+
+        <div class="theme-intro">
+            <p>Bem-vindo(a) à Aula 28! <span class="emoji-small">✨</span></p>
+            <p>Hoje, vamos explorar o <strong>Third Conditional (Condicional Tipo 3)</strong>. Este tipo de condicional é usado para falar sobre <strong>situações hipotéticas no passado que não aconteceram</strong>, e seus <strong>resultados imaginários no passado</strong>. É perfeito para expressar <strong>arrependimentos, refletir sobre decisões passadas e suas consequências não realizadas</strong>. Prepare-se para pensar sobre "o que teria sido se..."! <span class="emoji-small">📜💭🔁</span></p>
+        </div>
+
+        <h2>28. Imaginando um Passado Diferente: Third Conditional</h2>
+
+        <section id="third-conditional-intro">
+            <h3>28.1 O Passado que Não Aconteceu: Third Conditional <span class="emoji-small">⏪</span></h3>
+            <p>O <strong>Third Conditional</strong> é usado para falar sobre situações no passado que não aconteceram e imaginar qual teria sido o resultado se tivessem acontecido. Como a condição é impossível (porque se refere ao passado e não pode ser mudada), o resultado também é imaginário.</p>
+            <p><strong>Estrutura:</strong> If + Past Perfect (had + Particípio Passado), ... would have + Particípio Passado.</p>
+            <div class="nota-dica">
+                <h4>Variações com Modais <span class="emoji-small">💡</span></h4>
+                <p>Na oração principal, você pode substituir <strong>"would have"</strong> por <strong>"could have"</strong> (teria podido/conseguido) ou <strong>"might have"</strong> (talvez tivesse) para expressar diferentes nuances de possibilidade ou capacidade hipotética no passado.</p>
+                <p>Ex: If we had left earlier, we <span class="example-word">might have caught</span> the train. (Se tivéssemos saído mais cedo, talvez tivéssemos pegado o trem.)</p>
+            </div>
+        </section>
+
+        <section id="third-conditional-practice">
+            <h3>28.2 Prática: Arrependimentos e Oportunidades Perdidas <span class="emoji-small">💭🔁</span></h3>
+            <p>Vamos praticar com exemplos fiéis ao arquivo original, focando em como as coisas poderiam ter sido diferentes.</p>
+            <div class="table-responsive-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 45%;">Frase em Inglês</th>
+                            <th>Detalhes (IPA / Tradução)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- 1 -->
+                        <tr>
+                            <td>If I <span class="example-word">'d known</span> about the traffic, I <span class="example-word">'d have left</span> earlier. <button class="audio-btn-inline" onclick="playAudio('If I had known about the traffic, I would have left earlier.')">🔊</button></td>
+                            <td class="details-cell"><span class="ipa-symbol">/ɪf aɪd noʊn əˈbaʊt ðə ˈtræfɪk.../</span><br><span class="character-portuguese-phonetics">(ÊF áid NÔUN ã-BÁUT dhã TRÉ-fêk...)</span><span class="details-translation">Se eu soubesse do trânsito, eu teria saído mais cedo.</span></td>
+                        </tr>
+                        <!-- 2 -->
+                        <tr>
+                            <td>She <span class="example-word">would've called</span> you if her phone <span class="example-word">hadn't died</span>. <button class="audio-btn-inline" onclick="playAudio('She would have called you if her phone hadn\'t died.')">🔊</button></td>
+                            <td class="details-cell"><span class="ipa-symbol">/ʃiː ˈwʊdəv kɔːld juː.../</span><br><span class="character-portuguese-phonetics">(XÍI UÚ-dãv CÓLD iúu...)</span><span class="details-translation">Ela teria te ligado se o telefone dela não tivesse descarregado.</span></td>
+                        </tr>
+                        <!-- 3 -->
+                        <tr>
+                            <td>If we<span class="example-word">'d saved</span> more money, we <span class="example-word">could've bought</span> a new car. <button class="audio-btn-inline" onclick="playAudio('If we had saved more money, we could have bought a new car.')">🔊</button></td>
+                            <td class="details-cell"><span class="ipa-symbol">/ɪf wiːd seɪvd mɔːr ˈmʌni.../</span><br><span class="character-portuguese-phonetics">(ÊF uíid SÊIVD MÓR MÂ-ni...)</span><span class="details-translation">Se tivéssemos economizado mais dinheiro, poderíamos ter comprado um carro novo.</span></td>
+                        </tr>
+                        <!-- 4 -->
+                        <tr>
+                            <td>They <span class="example-word">might've won</span> if the star player <span class="example-word">hadn't been</span> injured. <button class="audio-btn-inline" onclick="playAudio('They might have won if the star player hadn\'t been injured.')">🔊</button></td>
+                            <td class="details-cell"><span class="ipa-symbol">/ðeɪ maɪt həv wʌn ɪf ðə stɑːr ˈpleɪər.../</span><br><span class="character-portuguese-phonetics">(DHÊI MÁIT rãv UÂN êf dhã STÁR PLÊI-ãr...)</span><span class="details-translation">Eles talvez tivessem ganhado o jogo se o jogador estrela não estivesse machucado.</span></td>
+                        </tr>
+                        <!-- 5 -->
+                        <tr>
+                            <td>If he<span class="example-word">'d taken</span> that job, his life <span class="example-word">would've been</span> very different. <button class="audio-btn-inline" onclick="playAudio('If he had taken that job, his life would have been very different.')">🔊</button></td>
+                            <td class="details-cell"><span class="ipa-symbol">/ɪf hiːd ˈteɪkən ðæt dʒɑːb.../</span><br><span class="character-portuguese-phonetics">(ÊF ríid TÊI-cãn DHÉT DJÓB...)</span><span class="details-translation">Se ele tivesse aceitado aquele emprego, a vida dele teria sido muito diferente.</span></td>
+                        </tr>
+                        <!-- 6 -->
+                        <tr>
+                            <td>I <span class="example-word">would've gone</span> to the party if I<span class="example-word">'d known</span> you were going. <button class="audio-btn-inline" onclick="playAudio('I would have gone to the party if I had known you were going.')">🔊</button></td>
+                            <td class="details-cell"><span class="ipa-symbol">/aɪ ˈwʊdəv ɡɔːn tə ðə ˈpɑːrti.../</span><br><span class="character-portuguese-phonetics">(ÁI UÚ-dãv GÓN tã dhã PÁR-ti...)</span><span class="details-translation">Eu teria ido à festa se soubesse que você ia.</span></td>
+                        </tr>
+                        <!-- 7 -->
+                        <tr>
+                            <td>If she <span class="example-word">hadn't missed</span> the bus, she <span class="example-word">wouldn't have been</span> late for work. <button class="audio-btn-inline" onclick="playAudio('If she hadn\'t missed the bus, she wouldn\'t have been late for work.')">🔊</button></td>
+                            <td class="details-cell"><span class="ipa-symbol">/ɪf ʃiː ˈhædnt mɪst ðə bʌs.../</span><br><span class="character-portuguese-phonetics">(ÊF xíi RÉ-dãnt MÊST dhã BÂS...)</span><span class="details-translation">Se ela não tivesse perdido o ônibus, ela não teria se atrasado para o trabalho.</span></td>
+                        </tr>
+                        <!-- 8 -->
+                        <tr>
+                            <td>We <span class="example-word">could've helped</span> if we<span class="example-word">'d known</span> you needed assistance. <button class="audio-btn-inline" onclick="playAudio('We could have helped if we had known you needed assistance.')">🔊</button></td>
+                            <td class="details-cell"><span class="ipa-symbol">/wiː kəd həv helpt ɪf wiːd noʊn.../</span><br><span class="character-portuguese-phonetics">(UÍI cãd rãv RÉLPT êf uíid NÔUN...)</span><span class="details-translation">Nós poderíamos ter ajudado se soubéssemos que você precisava de assistência.</span></td>
+                        </tr>
+                        <!-- 9 -->
+                        <tr>
+                            <td>If they<span class="example-word">'d studied</span> more, they <span class="example-word">'d have understood</span> the lesson. <button class="audio-btn-inline" onclick="playAudio('If they had studied more, they would have understood the lesson.')">🔊</button></td>
+                            <td class="details-cell"><span class="ipa-symbol">/ɪf ðeɪd ˈstʌdid mɔːr.../</span><br><span class="character-portuguese-phonetics">(ÊF dhêid STÂ-did MÓR...)</span><span class="details-translation">Se eles tivessem estudado mais, eles teriam entendido a lição.</span></td>
+                        </tr>
+                        <!-- 10 -->
+                        <tr>
+                            <td>He <span class="example-word">would've bought</span> the house if he<span class="example-word">'d had</span> enough money. <button class="audio-btn-inline" onclick="playAudio('He would have bought the house if he had had enough money.')">🔊</button></td>
+                            <td class="details-cell"><span class="ipa-symbol">/hiː ˈwʊdəv bɔːt ðə haʊs ɪf hiːd hæd.../</span><br><span class="character-portuguese-phonetics">(RÍI UÚ-dãv BÓT dhã RÁUS êf ríid RÉD...)</span><span class="details-translation">Ele teria comprado a casa se tivesse tido dinheiro suficiente.</span></td>
+                        </tr>
+                        <!-- 11 -->
+                        <tr>
+                            <td>If I <span class="example-word">hadn't been</span> so tired, I <span class="example-word">would've gone</span> out. <button class="audio-btn-inline" onclick="playAudio('If I hadn\'t been so tired, I would have gone out.')">🔊</button></td>
+                            <td class="details-cell"><span class="ipa-symbol">/ɪf aɪ ˈhædnt bɪn soʊ ˈtaɪərd.../</span><br><span class="character-portuguese-phonetics">(ÊF ái RÉ-dãnt bên sôu TÁI-ãrd...)</span><span class="details-translation">Se eu não estivesse tão cansado, eu teria saído.</span></td>
+                        </tr>
+                        <!-- 12 -->
+                        <tr>
+                            <td>She <span class="example-word">would've finished</span> the race if she <span class="example-word">hadn't fallen</span>. <button class="audio-btn-inline" onclick="playAudio('She would have finished the race if she hadn\'t fallen.')">🔊</button></td>
+                            <td class="details-cell"><span class="ipa-symbol">/ʃiː ˈwʊdəv ˈfɪnɪʃt ðə reɪs.../</span><br><span class="character-portuguese-phonetics">(XÍI UÚ-dãv FÊ-nêsht dhã RÊIS...)</span><span class="details-translation">Ela teria terminado a corrida se não tivesse caído.</span></td>
+                        </tr>
+                        <!-- 13 -->
+                        <tr>
+                            <td>If we<span class="example-word">'d booked</span> earlier, we <span class="example-word">could've gotten</span> cheaper tickets. <button class="audio-btn-inline" onclick="playAudio('If we had booked earlier, we could have gotten cheaper tickets.')">🔊</button></td>
+                            <td class="details-cell"><span class="ipa-symbol">/ɪf wiːd bʊkt ˈɜːrliər.../</span><br><span class="character-portuguese-phonetics">(ÊF uíid BÚKT ÃR-li-ãr...)</span><span class="details-translation">Se tivéssemos reservado mais cedo, poderíamos ter conseguido ingressos mais baratos.</span></td>
+                        </tr>
+                        <!-- 14 -->
+                        <tr>
+                            <td>They <span class="example-word">wouldn't have been</span> surprised if they<span class="example-word">'d known</span> the plan. <button class="audio-btn-inline" onclick="playAudio('They wouldn\'t have been surprised if they had known the plan.')">🔊</button></td>
+                            <td class="details-cell"><span class="ipa-symbol">/ðeɪ ˈwʊdnt həv bɪn sərˈpraɪzd.../</span><br><span class="character-portuguese-phonetics">(DHÊI UÚ-dãnt rãv bên sãr-PRÁIZD...)</span><span class="details-translation">Eles não teriam ficado surpresos se soubessem do plano.</span></td>
+                        </tr>
+                        <!-- 15 -->
+                        <tr>
+                            <td>If you<span class="example-word">'d told</span> me, I <span class="example-word">'d have helped</span> you move. <button class="audio-btn-inline" onclick="playAudio('If you had told me, I would have helped you move.')">🔊</button></td>
+                            <td class="details-cell"><span class="ipa-symbol">/ɪf juːd toʊld miː.../</span><br><span class="character-portuguese-phonetics">(ÊF iúud TÔULD míi...)</span><span class="details-translation">Se você tivesse me contado, eu teria te ajudado a se mudar.</span></td>
+                        </tr>
+                        <!-- 16 -->
+                        <tr>
+                            <td>He <span class="example-word">might've passed</span> the interview if he<span class="example-word">'d prepared</span> more. <button class="audio-btn-inline" onclick="playAudio('He might have passed the interview if he had prepared more.')">🔊</button></td>
+                            <td class="details-cell"><span class="ipa-symbol">/hiː maɪt həv pæst ði ˈɪntərvjuː.../</span><br><span class="character-portuguese-phonetics">(RÍI MÁIT rãv PÉST dhí ÊN-tãr-viúu...)</span><span class="details-translation">Ele talvez tivesse passado na entrevista se tivesse se preparado mais.</span></td>
+                        </tr>
+                        <!-- 17 -->
+                        <tr>
+                            <td>If the alarm <span class="example-word">hadn't gone off</span>, I <span class="example-word">would've overslept</span>. <button class="audio-btn-inline" onclick="playAudio('If the alarm hadn\'t gone off, I would have overslept.')">🔊</button></td>
+                            <td class="details-cell"><span class="ipa-symbol">/ɪf ði əˈlɑːrm ˈhædnt ɡɔːn ɔːf.../</span><br><span class="character-portuguese-phonetics">(ÊF dhí ã-LÁRM RÉ-dãnt GÓN ÓF...)</span><span class="details-translation">Se o alarme não tivesse tocado, eu teria dormido demais.</span></td>
+                        </tr>
+                        <!-- 18 -->
+                        <tr>
+                            <td>She <span class="example-word">would've bought</span> the dress if it <span class="example-word">had been</span> on sale. <button class="audio-btn-inline" onclick="playAudio('She would have bought the dress if it had been on sale.')">🔊</button></td>
+                            <td class="details-cell"><span class="ipa-symbol">/ʃiː ˈwʊdəv bɔːt ðə dres.../</span><br><span class="character-portuguese-phonetics">(XÍI UÚ-dãv BÓT dhã DRÉS...)</span><span class="details-translation">Ela teria comprado o vestido se estivesse em promoção.</span></td>
+                        </tr>
+                        <!-- 19 -->
+                        <tr>
+                            <td>If we <span class="example-word">hadn't forgotten</span> the map, we <span class="example-word">wouldn't have needed</span> to ask for directions. <button class="audio-btn-inline" onclick="playAudio('If we hadn\'t forgotten the map, we wouldn\'t have needed to ask for directions.')">🔊</button></td>
+                            <td class="details-cell"><span class="ipa-symbol">/ɪf wiː ˈhædnt fərˈɡɑːtn ðə mæp.../</span><br><span class="character-portuguese-phonetics">(ÊF uíi RÉ-dãnt fór-GÓ-tãn dhã MÉP...)</span><span class="details-translation">Se não tivéssemos esquecido o mapa, não teríamos precisado pedir direções.</span></td>
+                        </tr>
+                        <!-- 20 -->
+                        <tr>
+                            <td>They <span class="example-word">could've seen</span> the show if they<span class="example-word">'d arrived</span> earlier. <button class="audio-btn-inline" onclick="playAudio('They could have seen the show if they had arrived earlier.')">🔊</button></td>
+                            <td class="details-cell"><span class="ipa-symbol">/ðeɪ kəd həv siːn ðə ʃoʊ.../</span><br><span class="character-portuguese-phonetics">(DHÊI cãd rãv SÍIN dhã XÔU...)</span><span class="details-translation">Eles poderiam ter visto o show se tivessem chegado mais cedo.</span></td>
+                        </tr>
+                        <!-- 21 -->
+                        <tr>
+                            <td>If I<span class="example-word">'d listened</span> to your advice, I <span class="example-word">wouldn't have made</span> that mistake. <button class="audio-btn-inline" onclick="playAudio('If I had listened to your advice, I wouldn\'t have made that mistake.')">🔊</button></td>
+                            <td class="details-cell"><span class="ipa-symbol">/ɪf aɪd ˈlɪsnd tə jɔːr ædˈvaɪs.../</span><br><span class="character-portuguese-phonetics">(ÊF áid LÊ-sãnd tã iór éd-VÁIS...)</span><span class="details-translation">Se eu tivesse ouvido seu conselho, não teria cometido aquele erro.</span></td>
+                        </tr>
+                        <!-- 22 -->
+                        <tr>
+                            <td>The company <span class="example-word">might've succeeded</span> if it <span class="example-word">had had</span> better marketing. <button class="audio-btn-inline" onclick="playAudio('The company might\'ve succeeded if it had had better marketing.')">🔊</button></td>
+                            <td class="details-cell"><span class="ipa-symbol">/ðə ˈkʌmpəni maɪt həv səkˈsiːdɪd.../</span><br><span class="character-portuguese-phonetics">(dhã CÂM-pã-ni MÁIT rãv sãk-SÍI-dêd...)</span><span class="details-translation">A empresa talvez tivesse tido sucesso se tivesse tido um marketing melhor.</span></td>
+                        </tr>
+                        <!-- 23 -->
+                        <tr>
+                            <td>If you <span class="example-word">hadn't helped</span> me, I <span class="example-word">would have been</span> in big trouble. <button class="audio-btn-inline" onclick="playAudio('If you hadn\'t helped me, I would have been in big trouble.')">🔊</button></td>
+                            <td class="details-cell"><span class="ipa-symbol">/ɪf juː ˈhædnt helpt miː.../</span><br><span class="character-portuguese-phonetics">(ÊF iúu RÉ-dãnt RÉLPT míi...)</span><span class="details-translation">Se você não tivesse me ajudado, eu estaria em grandes apuros.</span></td>
+                        </tr>
+                        <!-- 24 -->
+                        <tr>
+                            <td>He <span class="example-word">would've felt</span> better if he <span class="example-word">had rested</span> more. <button class="audio-btn-inline" onclick="playAudio('He would have felt better if he had rested more.')">🔊</button></td>
+                            <td class="details-cell"><span class="ipa-symbol">/hiː ˈwʊdəv felt ˈbetər.../</span><br><span class="character-portuguese-phonetics">(RÍI UÚ-dãv FÉLT BÉ-tãr...)</span><span class="details-translation">Ele teria se sentido melhor se tivesse descansado mais.</span></td>
+                        </tr>
+                        <!-- 25 -->
+                        <tr>
+                            <td>If I <span class="example-word">had found</span> my keys, I <span class="example-word">could've opened</span> the door. <button class="audio-btn-inline" onclick="playAudio('If I had found my keys, I could\'ve opened the door.')">🔊</button></td>
+                            <td class="details-cell"><span class="ipa-symbol">/ɪf aɪ hæd faʊnd maɪ kiːz.../</span><br><span class="character-portuguese-phonetics">(ÊF ái réd FÁUND mái KÍIZ...)</span><span class="details-translation">Se eu tivesse encontrado minhas chaves, eu poderia ter aberto a porta.</span></td>
+                        </tr>
+                        <!-- 26 -->
+                        <tr>
+                            <td>What <span class="example-word">would have happened</span> if the internet <span class="example-word">hadn't been</span> invented? <button class="audio-btn-inline" onclick="playAudio('What would have happened if the internet hadn\'t been invented?')">🔊</button></td>
+                            <td class="details-cell"><span class="ipa-symbol">/wʌt wəd həv ˈhæpənd.../</span><br><span class="character-portuguese-phonetics">(UÓT uãd rãv RÉ-pãnd...)</span><span class="details-translation">O que teria acontecido se a internet não tivesse sido inventada?</span></td>
+                        </tr>
+                        <!-- 27 -->
+                        <tr>
+                            <td>If you <span class="example-word">had been</span> there, you <span class="example-word">would have loved</span> the concert. <button class="audio-btn-inline" onclick="playAudio('If you had been there, you would have loved the concert.')">🔊</button></td>
+                            <td class="details-cell"><span class="ipa-symbol">/ɪf juː hæd bɪn ðer.../</span><br><span class="character-portuguese-phonetics">(ÊF iúu réd BÊN dhér...)</span><span class="details-translation">Se você estivesse lá, você teria amado o show.</span></td>
+                        </tr>
+                        <!-- 28 -->
+                        <tr>
+                            <td>The project <span class="example-word">would have been</span> a success if they <span class="example-word">had collaborated</span> better. <button class="audio-btn-inline" onclick="playAudio('The project would have been a success if they had collaborated better.')">🔊</button></td>
+                            <td class="details-cell"><span class="ipa-symbol">/ðə ˈprɑːdʒekt wəd həv bɪn ə səkˈses.../</span><br><span class="character-portuguese-phonetics">(dhã PRÓ-djekt uãd rãv bên ã sãk-SÉS...)</span><span class="details-translation">O projeto teria sido um sucesso se eles tivessem colaborado melhor.</span></td>
+                        </tr>
+                        <!-- 29 -->
+                        <tr>
+                            <td>If I <span class="example-word">hadn't spent</span> all my money, I <span class="example-word">could have bought</span> that souvenir. <button class="audio-btn-inline" onclick="playAudio('If I hadn\'t spent all my money, I could have bought that souvenir.')">🔊</button></td>
+                            <td class="details-cell"><span class="ipa-symbol">/ɪf aɪ ˈhædnt spent ɔːl maɪ ˈmʌni.../</span><br><span class="character-portuguese-phonetics">(ÊF ái RÉ-dãnt SPÉNT ól mái MÂ-ni...)</span><span class="details-translation">Se eu não tivesse gastado todo o meu dinheiro, poderia ter comprado aquela lembrancinha.</span></td>
+                        </tr>
+                        <!-- 30 -->
+                        <tr>
+                            <td>She <span class="example-word">might have understood</span> if you <span class="example-word">had explained</span> the situation in French. <button class="audio-btn-inline" onclick="playAudio('She might have understood if you had explained the situation in French.')">🔊</button></td>
+                            <td class="details-cell"><span class="ipa-symbol">/ʃiː maɪt həv ˌʌndərˈstʊd.../</span><br><span class="character-portuguese-phonetics">(XÍI MÁIT rãv ân-dãr-STÚD...)</span><span class="details-translation">Ela talvez tivesse entendido se você tivesse explicado a situação em francês.</span></td>
+                        </tr>
+                        <!-- 31 -->
+                        <tr>
+                            <td>If the team <span class="example-word">had practiced</span> more, they <span class="example-word">wouldn't have lost</span> the final match. <button class="audio-btn-inline" onclick="playAudio('If the team had practiced more, they wouldn\'t have lost the final match.')">🔊</button></td>
+                            <td class="details-cell"><span class="ipa-symbol">/ɪf ðə tiːm hæd ˈpræktɪst mɔːr.../</span><br><span class="character-portuguese-phonetics">(ÊF dhã TÍIM réd PRÉK-têst MÓR...)</span><span class="details-translation">Se o time tivesse treinado mais, eles não teriam perdido a partida final.</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="vocabulario">
+            <h3>Vocabulário da Aula: Arrependimentos e Oportunidades 📚</h3>
+            <p>Palavras fundamentais para falar sobre o passado irreal.</p>
+            <div class="vocab-grid">
+                <div class="vocab-item"><div class="vocab-text"><span class="vocab-en">Regret</span><span class="vocab-ipa">/rɪˈɡret/</span><span class="vocab-pt">ARREPENDIMENTO</span></div><button class="audio-btn-round" onclick="playAudio('Regret')">🔊</button></div>
+                <div class="vocab-item"><div class="vocab-text"><span class="vocab-en">Opportunity</span><span class="vocab-ipa">/ˌɑːpərˈtuːnəti/</span><span class="vocab-pt">OPORTUNIDADE</span></div><button class="audio-btn-round" onclick="playAudio('Opportunity')">🔊</button></div>
+                <div class="vocab-item"><div class="vocab-text"><span class="vocab-en">Decision</span><span class="vocab-ipa">/dɪˈsɪʒn/</span><span class="vocab-pt">DECISÃO</span></div><button class="audio-btn-round" onclick="playAudio('Decision')">🔊</button></div>
+                <div class="vocab-item"><div class="vocab-text"><span class="vocab-en">Consequence</span><span class="vocab-ipa">/ˈkɑːnsəkwens/</span><span class="vocab-pt">CONSEQUÊNCIA</span></div><button class="audio-btn-round" onclick="playAudio('Consequence')">🔊</button></div>
+                <div class="vocab-item"><div class="vocab-text"><span class="vocab-en">Mistake</span><span class="vocab-ipa">/mɪˈsteɪk/</span><span class="vocab-pt">ERRO / ENGANO</span></div><button class="audio-btn-round" onclick="playAudio('Mistake')">🔊</button></div>
+                <div class="vocab-item"><div class="vocab-text"><span class="vocab-en">Outcome</span><span class="vocab-ipa">/ˈaʊtkʌm/</span><span class="vocab-pt">RESULTADO</span></div><button class="audio-btn-round" onclick="playAudio('Outcome')">🔊</button></div>
+                <div class="vocab-item"><div class="vocab-text"><span class="vocab-en">Reflect</span><span class="vocab-ipa">/rɪˈflekt/</span><span class="vocab-pt">REFLETIR</span></div><button class="audio-btn-round" onclick="playAudio('Reflect')">🔊</button></div>
+                <div class="vocab-item"><div class="vocab-text"><span class="vocab-en">Imagine</span><span class="vocab-ipa">/ɪˈmædʒɪn/</span><span class="vocab-pt">IMAGINAR</span></div><button class="audio-btn-round" onclick="playAudio('Imagine')">🔊</button></div>
+                <div class="vocab-item"><div class="vocab-text"><span class="vocab-en">Differently</span><span class="vocab-ipa">/ˈdɪfrəntli/</span><span class="vocab-pt">DIFERENTEMENTE</span></div><button class="audio-btn-round" onclick="playAudio('Differently')">🔊</button></div>
+                <div class="vocab-item"><div class="vocab-text"><span class="vocab-en">Alternatively</span><span class="vocab-ipa">/ɔːlˈtɜːrnətɪvli/</span><span class="vocab-pt">ALTERNATIVAMENTE</span></div><button class="audio-btn-round" onclick="playAudio('Alternatively')">🔊</button></div>
+                <div class="vocab-item"><div class="vocab-text"><span class="vocab-en">Avoid</span><span class="vocab-ipa">/əˈvɔɪd/</span><span class="vocab-pt">EVITAR</span></div><button class="audio-btn-round" onclick="playAudio('Avoid')">🔊</button></div>
+                <div class="vocab-item"><div class="vocab-text"><span class="vocab-en">Prevent</span><span class="vocab-ipa">/prɪˈvent/</span><span class="vocab-pt">PREVENIR</span></div><button class="audio-btn-round" onclick="playAudio('Prevent')">🔊</button></div>
+                <div class="vocab-item"><div class="vocab-text"><span class="vocab-en">Succeed</span><span class="vocab-ipa">/səkˈsiːd/</span><span class="vocab-pt">TER SUCESSO</span></div><button class="audio-btn-round" onclick="playAudio('Succeed')">🔊</button></div>
+                <div class="vocab-item"><div class="vocab-text"><span class="vocab-en">Fail</span><span class="vocab-ipa">/feɪl/</span><span class="vocab-pt">FALHAR / REPROVAR</span></div><button class="audio-btn-round" onclick="playAudio('Fail')">🔊</button></div>
+                <div class="vocab-item"><div class="vocab-text"><span class="vocab-en">Achieve</span><span class="vocab-ipa">/əˈtʃiːv/</span><span class="vocab-pt">ALCANÇAR</span></div><button class="audio-btn-round" onclick="playAudio('Achieve')">🔊</button></div>
+                <div class="vocab-item"><div class="vocab-text"><span class="vocab-en">Miss (opportunity)</span><span class="vocab-ipa">/mɪs/</span><span class="vocab-pt">PERDER (CHANCE)</span></div><button class="audio-btn-round" onclick="playAudio('Miss')">🔊</button></div>
+                <div class="vocab-item"><div class="vocab-text"><span class="vocab-en">Correct</span><span class="vocab-ipa">/kəˈrekt/</span><span class="vocab-pt">CORRIGIR</span></div><button class="audio-btn-round" onclick="playAudio('Correct')">🔊</button></div>
+                <div class="vocab-item"><div class="vocab-text"><span class="vocab-en">Alter</span><span class="vocab-ipa">/ˈɔːltər/</span><span class="vocab-pt">ALTERAR</span></div><button class="audio-btn-round" onclick="playAudio('Alter')">🔊</button></div>
+                <div class="vocab-item"><div class="vocab-text"><span class="vocab-en">Reconsider</span><span class="vocab-ipa">/ˌriːkənˈsɪdər/</span><span class="vocab-pt">RECONSIDERAR</span></div><button class="audio-btn-round" onclick="playAudio('Reconsider')">🔊</button></div>
+                <div class="vocab-item"><div class="vocab-text"><span class="vocab-en">Lament</span><span class="vocab-ipa">/ləˈment/</span><span class="vocab-pt">LAMENTAR</span></div><button class="audio-btn-round" onclick="playAudio('Lament')">🔊</button></div>
+                <div class="vocab-item"><div class="vocab-text"><span class="vocab-en">Turning point</span><span class="vocab-ipa">/ˈtɜːrnɪŋ pɔɪnt/</span><span class="vocab-pt">PONTO DE VIRADA</span></div><button class="audio-btn-round" onclick="playAudio('Turning point')">🔊</button></div>
+                <div class="vocab-item"><div class="vocab-text"><span class="vocab-en">Crucial moment</span><span class="vocab-ipa">/ˈkruːʃl ˈmoʊmənt/</span><span class="vocab-pt">MOMENTO CRUCIAL</span></div><button class="audio-btn-round" onclick="playAudio('Crucial moment')">🔊</button></div>
+                <div class="vocab-item"><div class="vocab-text"><span class="vocab-en">Hindsight</span><span class="vocab-ipa">/ˈhaɪndsaɪt/</span><span class="vocab-pt">RETROSPECTIVA</span></div><button class="audio-btn-round" onclick="playAudio('Hindsight')">🔊</button></div>
+                <div class="vocab-item"><div class="vocab-text"><span class="vocab-en">Foresight</span><span class="vocab-ipa">/ˈfɔːrsaɪt/</span><span class="vocab-pt">PREVISÃO</span></div><button class="audio-btn-round" onclick="playAudio('Foresight')">🔊</button></div>
+                <div class="vocab-item"><div class="vocab-text"><span class="vocab-en">Unforgettable</span><span class="vocab-ipa">/ˌʌnfərˈɡetəbl/</span><span class="vocab-pt">INESQUECÍVEL</span></div><button class="audio-btn-round" onclick="playAudio('Unforgettable')">🔊</button></div>
+                <div class="vocab-item"><div class="vocab-text"><span class="vocab-en">Impactful</span><span class="vocab-ipa">/ˈɪmpæktfl/</span><span class="vocab-pt">IMPACTANTE</span></div><button class="audio-btn-round" onclick="playAudio('Impactful')">🔊</button></div>
+                <div class="vocab-item"><div class="vocab-text"><span class="vocab-en">Choice</span><span class="vocab-ipa">/tʃɔɪs/</span><span class="vocab-pt">ESCOLHA</span></div><button class="audio-btn-round" onclick="playAudio('Choice')">🔊</button></div>
+                <div class="vocab-item"><div class="vocab-text"><span class="vocab-en">Path / Route</span><span class="vocab-ipa">/pæθ/ /ruːt/</span><span class="vocab-pt">CAMINHO / ROTA</span></div><button class="audio-btn-round" onclick="playAudio('Path. Route')">🔊</button></div>
+                <div class="vocab-item"><div class="vocab-text"><span class="vocab-en">Decisive</span><span class="vocab-ipa">/dɪˈsaɪsɪv/</span><span class="vocab-pt">DECISIVO</span></div><button class="audio-btn-round" onclick="playAudio('Decisive')">🔊</button></div>
+                <div class="vocab-item"><div class="vocab-text"><span class="vocab-en">Influential</span><span class="vocab-ipa">/ˌɪnfluˈenʃl/</span><span class="vocab-pt">INFLUENTE</span></div><button class="audio-btn-round" onclick="playAudio('Influential')">🔊</button></div>
+            </div>
+        </section>
+
+        <section id="tarefa-extra" class="extra-task">
+            <h3>Tarefa Extra ✍️</h3>
+            <h4>Translate the Text</h4>
+            <p>Read the text below about a historical "what if" scenario. Pay close attention to the use of the Third Conditional to explore past possibilities. Then, try to translate it into Portuguese.</p>
+            <p>
+                Historians often wonder about turning points in history. For example, if the library of Alexandria <span class="example-word">hadn't been destroyed</span>, humanity <span class="example-word">would have preserved</span> centuries of ancient knowledge. We <span class="example-word">might have achieved</span> certain scientific advancements much earlier. If ancient scholars <span class="example-word">had saved</span> more of those scrolls, modern science <span class="example-word">could have had</span> a different foundation. The world <span class="example-word">would have been</span> a profoundly different place.
+                <br><br>
+                Think about a more personal decision. I once had an opportunity to work abroad. If I <span class="example-word">had taken</span> that job, I <span class="example-word">would have lived</span> in Japan for five years. I <span class="example-word">would have learned</span> a new language and experienced a completely different culture. I didn't take it because I was afraid. If I <span class="example-word">had been</span> more courageous, I <span class="example-word">wouldn't have</span> this regret now.
+                <br><br>
+                My friend, on the other hand, took a big risk. He invested in a small startup. If he <span class="example-word">hadn't invested</span> that money, he <span class="example-word">would have bought</span> a safe, normal house. But because he did, he is now the CEO of a successful company. His life <span class="example-word">wouldn't have changed</span> so dramatically if he <span class="example-word">had chosen</span> the safer path.
+                <br><br>
+                These are the types of reflections that the Third Conditional allows. It's a way to explore the paths not taken. What <span class="example-word">would have happened</span> if you <span class="example-word">had made</span> a different choice at a crucial moment in your life? It’s a powerful question. If we <span class="example-word">hadn't made</span> our past mistakes, maybe we <span class="example-word">wouldn't have learned</span> the valuable lessons that define who we are today.
+            </p>
+            <hr>
+            <h4>Quiz</h4>
+            <p>According to the text, what might have happened if the library of Alexandria had not been destroyed?</p>
+            <ol class="quiz-options">
+                <li>Nothing would have changed.</li>
+                <li>Ancient scholars would have written more books.</li>
+                <li>We might have made scientific advancements much earlier.</li>
+                <li>People would have stopped reading.</li>
+                <li>My friend would not have invested in a startup.</li>
+            </ol>
+            <details class="gabarito">
+                <summary>Ver Resposta do Quiz</summary>
+                <div class="gabarito-content">
+                    Resposta Correta: <strong>c) We might have made scientific advancements much earlier.</strong>
+                </div>
+            </details>
+        </section>
+
+        <section id="exercicios-finais">
+            <h3>Exercícios Práticos Finais 📝</h3>
+            <div class="secao-exercicios">
+                <h4>Parte 1: Complete as Frases Condicionais</h4>
+                <p>Use a forma correta dos verbos entre parênteses para formar frases no Third Conditional.</p>
+                <ol class="exercise-list">
+                    <li>If I <span class="fill-in-blank"></span> (know) you were coming, I <span class="fill-in-blank"></span> (bake) a cake.</li>
+                    <li>She <span class="fill-in-blank"></span> (not / miss) the train if she <span class="fill-in-blank"></span> (leave) earlier.</li>
+                    <li>What <span class="fill-in-blank"></span> (you / do) if you <span class="fill-in-blank"></span> (see) the accident?</li>
+                </ol>
+                <h4>Parte 2: Crie uma Frase de Arrependimento</h4>
+                <p>Pense em algo que você fez (ou não fez) no passado e que se arrepende um pouco. Escreva uma frase no Third Conditional sobre isso.</p>
+                <p>→ <span class="fill-in-blank" style="width: 100%;"></span>.</p>
+            </div>
+            <details class="gabarito">
+                <summary>Ver Gabarito dos Exercícios</summary>
+                <div class="gabarito-content">
+                    <p><strong>Parte 1:</strong> 1. had known / would have baked, 2. wouldn't have missed / had left, 3. would you have done / had seen.</p>
+                    <p><strong>Parte 2 (Exemplo):</strong> If I had saved more money last year, I would have traveled to Europe.</p>
+                </div>
+            </details>
+        </section>
+
+        <section id="conclusao">
+            <h3>Conclusão 🥳</h3>
+            <p>Excelente trabalho na Aula 28! Você agora sabe como usar o Third Conditional para falar sobre situações hipotéticas no passado, expressar arrependimentos e refletir sobre como as coisas poderiam ter sido diferentes. Esta é uma estrutura complexa, mas muito útil para narrativas e discussões profundas.</p>
+            <p>Continue praticando para se sentir cada vez mais confortável com o Past Perfect e "would have + Particípio Passado".</p>
+            <p>Na próxima aula, vamos explorar a Voz Passiva para mudar o foco de nossas frases. Até lá!</p>
+        </section>
+
+        <!-- Botão Navegação Rodapé -->
+        <button class="nav-btn" onclick="alert('Voltar ao Menu Principal')">⬅ Voltar ao Menu</button>
+    </div>
+
+    <!-- SCRIPT DE ÁUDIO OTIMIZADO -->
+    <script>
+        let voices = [];
+        function loadVoices() {
+            voices = window.speechSynthesis.getVoices();
+        }
+        loadVoices();
+        if (window.speechSynthesis.onvoiceschanged !== undefined) {
+            window.speechSynthesis.onvoiceschanged = loadVoices;
+        }
+
+        function playAudio(text) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.rate = 0.85;
+                if (voices.length === 0) loadVoices();
+                const targetVoice = voices.find(voice => 
+                    (voice.name.includes('Google') || voice.name.includes('Premium') || voice.name.includes('Samantha')) 
+                    && voice.lang.includes('en-US')
+                ) || voices.find(voice => voice.lang === 'en-US');
+                if (targetVoice) utterance.voice = targetVoice;
+                window.speechSynthesis.speak(utterance);
+            } else {
+                alert("Áudio não suportado.");
+            }
+        }
+    </script>
+</body>
+</html>
