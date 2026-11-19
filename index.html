@@ -3,600 +3,1858 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Aula 28: O Que Teria Sido Diferente? – Condicional Tipo 3</title>
+    <title>Aula 28: O Que Teria Sido Diferente? – Condicional Tipo 3 | Método IPA</title>
+
+    <!-- Fontes do Google -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+
     <style>
-        /* --- RESET E BASE --- */
-        * { box-sizing: border-box; }
+        /* --- VARIÁVEIS E BASE --- */
+        :root {
+            --navy: #20344b;
+            --blue: #2980b9;
+            --teal: #16a085;
+            --purple: #8e44ad;
+            --amber: #d35400;
+            --gold-bg: #fffbeb;
+            --gold-border: #f59e0b;
+            --ink: #243140;
+            --muted: #64748b;
+            --line: #e2e8f0;
+            --bg: #edf2f7;
+            --paper: #ffffff;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
         body {
             font-family: 'Inter', sans-serif;
             line-height: 1.6;
-            margin: 0;
-            padding: 0;
-            background-color: #f0f2f5;
-            color: #333;
+            background-color: var(--bg);
+            color: var(--ink);
             -webkit-font-smoothing: antialiased;
+            padding: 20px 10px 90px 10px;
         }
 
         .container {
-            max-width: 800px;
+            position: relative;
+            max-width: 1050px;
             margin: 0 auto;
-            background: #fff;
-            padding: 20px 15px;
-            min-height: 100vh;
-            box-shadow: 0 0 20px rgba(0,0,0,0.05);
+            background: var(--paper);
+            padding: 30px;
+            border-radius: 14px;
+            box-shadow: 0 5px 24px rgba(32, 52, 75, 0.09);
+            overflow: visible;
+        }
+
+        /* --- CAMADA VETORIAL DE DESENHO (CANETA / MARCA-TEXTO SOBRE O LIVRO) --- */
+        #drawLayer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 40;
+            pointer-events: none;
+            overflow: visible;
+            border-radius: 14px;
+        }
+
+        #drawLayer.active-pen {
+            pointer-events: auto;
+            touch-action: none;
+            cursor: crosshair;
+        }
+
+        #drawLayer.active-eraser {
+            pointer-events: auto;
+            touch-action: none;
+            cursor: cell;
+        }
+
+        #drawLayer.hidden-strokes {
+            opacity: 0;
+        }
+
+        .stroke-highlighter {
+            mix-blend-mode: multiply;
         }
 
         /* --- TIPOGRAFIA --- */
         h1 {
-            color: #2c3e50;
+            color: var(--navy);
             text-align: center;
-            font-size: 1.5rem;
-            margin-bottom: 25px;
+            font-size: 1.85rem;
+            margin-bottom: 18px;
             padding-bottom: 15px;
-            border-bottom: 3px solid #3498db;
+            border-bottom: 3px solid var(--blue);
             line-height: 1.3;
         }
-        
-        h2, h3, h4 { color: #2c3e50; margin-top: 25px; }
-        h3 { color: #34495e; font-size: 1.25rem; border-left: 4px solid #3498db; padding-left: 10px; }
-        h4 { color: #c0392b; font-size: 1.1rem; margin-bottom: 10px; }
-        
-        p, li { font-size: 1rem; margin-bottom: 10px; }
-        
-        .emoji-large { font-size: 1.5rem; }
-        .emoji-small { font-size: 1.2rem; }
 
-        /* --- DESTAQUES E CAIXAS --- */
-        .theme-intro, .nota-gramatical, .nota-dica, .secao-exercicios, .extra-task {
-            padding: 15px;
-            margin: 15px 0;
-            border-radius: 8px;
-            border-left: 5px solid transparent;
-        }
-
-        .theme-intro { background-color: #eaf2f8; border-left-color: #3498db; }
-        .nota-gramatical { background-color: #ecf0f1; border-left-color: #f39c12; }
-        .nota-dica { background-color: #e8f6f3; border-left-color: #16a085; }
-        .extra-task { background-color: #f5eef8; border-left-color: #9b59b6; }
-        .secao-exercicios { background-color: #fff8e1; border-left-color: #f39c12; }
-
-        .example-word { color: #2980b9; font-weight: 700; }
-        
-        /* --- ESTILOS DE IPA E PRONÚNCIA --- */
-        code, .ipa-symbol {
-            font-family: 'Roboto Mono', monospace;
-            background-color: #f1f1f1;
-            padding: 2px 4px;
-            border-radius: 4px;
-            color: #e74c3c;
-            font-size: 0.9em;
-        }
-        
-        .character-portuguese-phonetics {
+        .subtitle {
             display: block;
-            color: #27ae60;
-            font-style: italic;
-            font-size: 0.85em;
-            margin-top: 2px;
+            font-size: 0.98rem;
+            font-weight: 500;
+            color: var(--muted);
+            margin-top: 6px;
         }
 
-        /* --- BOTÃO DE NAVEGAÇÃO --- */
-        .nav-btn {
-            display: block;
-            width: 100%;
-            background-color: #34495e;
-            color: white;
-            text-align: center;
-            padding: 12px;
-            margin: 10px 0;
-            text-decoration: none;
-            border-radius: 8px;
-            font-weight: bold;
+        h2 {
+            color: var(--navy);
+            margin-top: 36px;
+            margin-bottom: 14px;
+            font-size: 1.45rem;
+            border-bottom: 2px solid #ebf5fb;
+            padding-bottom: 8px;
+            page-break-after: avoid;
+        }
+
+        h3 {
+            color: #1f618d;
+            font-size: 1.22rem;
+            margin-top: 28px;
+            margin-bottom: 12px;
+            border-left: 4px solid var(--blue);
+            padding-left: 12px;
+            page-break-after: avoid;
+        }
+
+        h4 {
+            color: #c0392b;
+            font-size: 1.05rem;
+            margin: 16px 0 10px 0;
+        }
+
+        p, li { font-size: 0.98rem; margin-bottom: 10px; color: #374151; }
+        ul, ol { padding-left: 22px; margin-bottom: 14px; }
+
+        .emoji-large { font-size: 1.35rem; }
+        .emoji-small { font-size: 1.15rem; }
+
+        /* --- BARRAS DE AÇÃO (TOPO, FERRAMENTAS E RODAPÉ) --- */
+        .top-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 18px;
+            position: relative;
+            z-index: 45;
+        }
+
+        .nav-btn, .pdf-btn {
+            flex: 1;
+            min-width: 220px;
             border: none;
+            border-radius: 8px;
+            padding: 13px 16px;
+            font-weight: 700;
+            font-size: 0.96rem;
+            cursor: pointer;
+            transition: opacity 0.2s, transform 0.1s;
+            font-family: 'Inter', sans-serif;
+        }
+        .nav-btn:hover, .pdf-btn:hover { opacity: 0.92; }
+        .nav-btn:active, .pdf-btn:active { transform: scale(0.99); }
+        .nav-btn { background-color: var(--navy); color: #fff; }
+        .pdf-btn { background-color: var(--teal); color: #fff; }
+
+        .notes-toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+            background: #f8fafc;
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            padding: 12px 15px;
+            margin: 16px 0 22px 0;
+            position: relative;
+            z-index: 45;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.04);
+        }
+
+        .notes-toolbar-status {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--navy);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-right: auto;
+        }
+
+        .toolbar-btn {
+            border: 1px solid #cbd5e1;
+            background: #fff;
+            color: var(--navy);
+            border-radius: 7px;
+            padding: 7px 12px;
+            font-size: 0.83rem;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.15s;
+        }
+        .toolbar-btn:hover { background: #ebf5fb; border-color: var(--blue); color: var(--blue); }
+        .toolbar-btn.danger:hover { background: #fef2f2; border-color: #ef4444; color: #dc2626; }
+        .toolbar-btn.pen-cta {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: #fff;
+            border-color: #1d4ed8;
+        }
+        .toolbar-btn.pen-cta:hover { background: #1e40af; color: #fff; }
+
+        /* --- BARRA FLUTUANTE DA CANETA / MARCA-TEXTO (ESTILO PAINT NO LIVRO) --- */
+        .pen-fab {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 100;
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: #fff;
+            border: none;
+            border-radius: 999px;
+            padding: 13px 20px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.94rem;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 8px 24px rgba(37, 99, 235, 0.38);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: transform 0.15s, background 0.2s;
+        }
+        .pen-fab:hover { transform: translateY(-2px); }
+        .pen-fab.is-open { display: none; }
+
+        .pen-dock {
+            position: fixed;
+            bottom: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+            background: rgba(20, 31, 46, 0.96);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 16px;
+            padding: 10px 14px;
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.32);
+            display: none;
+            flex-direction: column;
+            gap: 8px;
+            width: min(96vw, 760px);
+            backdrop-filter: blur(8px);
+        }
+        .pen-dock.open { display: flex; }
+
+        .pen-dock-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 7px;
+        }
+
+        .pen-mode-banner {
+            font-size: 0.78rem;
+            color: #fde68a;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .dock-btn {
+            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.08);
+            color: #f8fafc;
+            border-radius: 8px;
+            padding: 7px 11px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.15s;
+        }
+        .dock-btn:hover { background: rgba(255,255,255,0.18); }
+        .dock-btn.active {
+            background: #2563eb;
+            border-color: #60a5fa;
+            color: #fff;
+            box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.35);
+        }
+        .dock-btn.active-hl {
+            background: #ca8a04;
+            border-color: #fde047;
+            color: #fff;
+        }
+        .dock-btn.active-er {
+            background: #dc2626;
+            border-color: #fca5a5;
+            color: #fff;
+        }
+        .dock-btn.exit-btn {
+            background: #10b981;
+            border-color: #34d399;
+            color: #052e16;
+        }
+        .dock-btn.exit-btn:hover { background: #34d399; }
+
+        .color-swatch {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            border: 2px solid rgba(255,255,255,0.45);
+            cursor: pointer;
+            transition: transform 0.15s, border-color 0.15s;
+        }
+        .color-swatch:hover { transform: scale(1.12); }
+        .color-swatch.selected {
+            border: 3px solid #fff;
+            transform: scale(1.18);
+            box-shadow: 0 0 0 2px #3b82f6;
+        }
+
+        .size-pill {
+            border: 1px solid rgba(255,255,255,0.22);
+            background: rgba(255,255,255,0.08);
+            color: #e2e8f0;
+            border-radius: 6px;
+            padding: 4px 8px;
+            font-size: 0.75rem;
+            font-weight: 700;
             cursor: pointer;
         }
-        .nav-btn:hover { background-color: #2c3e50; }
+        .size-pill.selected { background: #fff; color: #0f172a; }
 
-        /* --- TABELAS OTIMIZADAS PARA MOBILE --- */
+        .dock-divider {
+            width: 1px;
+            height: 22px;
+            background: rgba(255,255,255,0.2);
+            margin: 0 2px;
+        }
+
+        /* CONFIRMAÇÃO INLINE (SEM ALERT/CONFIRM) */
+        .inline-confirm {
+            display: none;
+            width: 100%;
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 8px;
+            padding: 10px 14px;
+            margin-top: 6px;
+            font-size: 0.88rem;
+            color: #991b1b;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .inline-confirm.show { display: flex; }
+        .confirm-yes {
+            background: #dc2626;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 6px 12px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 0.83rem;
+        }
+        .confirm-no {
+            background: #fff;
+            color: #374151;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            padding: 6px 12px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.83rem;
+        }
+
+        .toast-banner {
+            display: none;
+            background: #e8f8f5;
+            border: 1px solid #a3e4d7;
+            color: #0e6251;
+            padding: 9px 14px;
+            border-radius: 8px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            margin: 10px 0;
+            text-align: center;
+            position: relative;
+            z-index: 45;
+        }
+        .toast-banner.show { display: block; }
+
+        /* --- CAIXAS DE DESTAQUE --- */
+        .theme-intro, .nota-gramatical, .nota-dica, .secao-exercicios, .extra-task {
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            border-left: 5px solid transparent;
+            page-break-inside: avoid;
+        }
+
+        .theme-intro { background-color: #ebf5fb; border-left-color: var(--blue); }
+        .nota-gramatical { background-color: #fef9e7; border-left-color: #f39c12; }
+        .nota-dica { background-color: #e8f8f5; border-left-color: var(--teal); }
+        .extra-task { background-color: #f5eef8; border-left-color: var(--purple); }
+        .secao-exercicios { background-color: #fff8eb; border-left-color: var(--amber); }
+
+        .example-word {
+            color: var(--blue);
+            font-weight: 700;
+            background: #eaf4fc;
+            padding: 1px 5px;
+            border-radius: 4px;
+        }
+
+        .formula-pill {
+            display: inline-block;
+            background: #20344b;
+            color: #fef08a;
+            font-family: 'Roboto Mono', monospace;
+            font-weight: 700;
+            font-size: 0.92rem;
+            padding: 7px 14px;
+            border-radius: 8px;
+            margin: 6px 0 12px 0;
+        }
+
+        .example-line {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 10px 12px;
+            margin: 8px 0;
+        }
+
+        /* --- BLOCO DE OBSERVAÇÕES DO ALUNO (AUTO-SAVE) --- */
+        .obs-box {
+            margin: 18px 0 28px 0;
+            background: var(--gold-bg);
+            border: 1px solid #fde68a;
+            border-left: 5px solid var(--gold-border);
+            border-radius: 10px;
+            padding: 14px 16px;
+            page-break-inside: avoid;
+        }
+
+        .obs-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .obs-title {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #92400e;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .obs-save-badge {
+            font-size: 0.76rem;
+            font-weight: 700;
+            color: #0f766e;
+            background: #ccfbf1;
+            padding: 2px 8px;
+            border-radius: 12px;
+            opacity: 0;
+            transition: opacity 0.25s ease;
+        }
+        .obs-save-badge.visible { opacity: 1; }
+
+        .obs-textarea {
+            width: 100%;
+            min-height: 76px;
+            resize: vertical;
+            padding: 10px 12px;
+            border: 1px solid #fcd34d;
+            border-radius: 8px;
+            background: #ffffff;
+            color: #1f2937;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.93rem;
+            line-height: 1.5;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .obs-textarea:focus {
+            outline: none;
+            border-color: #d97706;
+            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.18);
+        }
+
+        .obs-textarea::placeholder { color: #9ca3af; font-style: italic; }
+
+        .obs-print-mirror {
+            display: none;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-size: 9.2pt;
+            color: #1f2937;
+            background: #ffffff;
+            border: 1px dashed #d97706;
+            border-radius: 6px;
+            padding: 8px 10px;
+            line-height: 1.45;
+        }
+
+        /* --- IPA, FONÉTICA E BOTÕES DE ÁUDIO --- */
+        code, .ipa-symbol {
+            font-family: 'Roboto Mono', monospace;
+            background-color: #f1f5f9;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #c0392b;
+            font-size: 0.85rem;
+            display: inline-block;
+        }
+
+        .character-portuguese-phonetics {
+            display: block;
+            color: #15803d;
+            font-style: italic;
+            font-weight: 600;
+            font-size: 0.86rem;
+            margin-top: 3px;
+        }
+
+        .audio-btn-inline {
+            background: #eef6fc;
+            border: 1px solid #cce3f6;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1rem;
+            width: 32px;
+            height: 32px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            vertical-align: middle;
+            margin-left: 6px;
+            transition: transform 0.1s, background-color 0.2s;
+        }
+        .audio-btn-inline:hover { background: var(--blue); color: #fff; }
+        .audio-btn-inline:active { transform: scale(0.9); }
+
+        .audio-btn-pill {
+            background: #ebf5fb;
+            border: 1px solid #93c5fd;
+            color: #1d4ed8;
+            border-radius: 8px;
+            padding: 6px 12px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.15s;
+        }
+        .audio-btn-pill:hover { background: var(--blue); color: #fff; }
+        .audio-btn-pill.stop { background: #dc2626; border-color: #dc2626; color: #fff; }
+
+        /* --- BARRA DE PESQUISA --- */
+        .search-box { margin: 14px 0 18px 0; }
+        .search-input {
+            width: 100%;
+            padding: 11px 15px;
+            font-size: 0.96rem;
+            border: 2px solid #cbd5e1;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            transition: border-color 0.2s;
+        }
+        .search-input:focus { outline: none; border-color: var(--blue); }
+
+        /* --- TABELAS --- */
         .table-responsive-wrapper {
             width: 100%;
             overflow-x: auto;
-            margin-bottom: 20px;
-            border-radius: 8px;
-            border: 1px solid #eee;
+            -webkit-overflow-scrolling: touch;
+            margin: 14px 0 22px 0;
+            border-radius: 10px;
+            border: 1px solid var(--line);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.03);
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            min-width: 100%; 
+            min-width: 640px;
         }
 
         th {
-            background-color: #34495e;
+            background-color: var(--navy);
             color: white;
-            padding: 10px;
-            font-size: 0.9rem;
+            padding: 12px 14px;
+            font-size: 0.88rem;
             text-align: left;
+            font-weight: 600;
         }
 
         td {
-            padding: 12px 10px;
-            border-bottom: 1px solid #eee;
+            padding: 13px 14px;
+            border-bottom: 1px solid #eef2f6;
             vertical-align: top;
+            font-size: 0.94rem;
         }
 
-        tr:nth-child(even) { background-color: #f9f9f9; }
+        tr:nth-child(even) { background-color: #fafcfe; }
+        tr:hover { background-color: #f0f7ff; }
 
-        .details-cell {
-            font-size: 0.9rem;
-            color: #555;
+        .num-badge {
+            display: inline-block;
+            background: var(--blue);
+            color: #fff;
+            font-weight: 700;
+            font-size: 0.75rem;
+            padding: 2px 7px;
+            border-radius: 12px;
+            margin-right: 6px;
         }
+
+        .sentence-en {
+            font-weight: 600;
+            color: var(--navy);
+            font-size: 1rem;
+        }
+        .sentence-en b {
+            color: #1d4ed8;
+            background: #eff6ff;
+            padding: 0 4px;
+            border-radius: 4px;
+        }
+
         .details-translation {
             display: block;
-            margin-top: 6px;
-            padding-top: 6px;
-            border-top: 1px dashed #ddd;
-            color: #444;
-            font-weight: 500;
+            margin-top: 5px;
+            color: #1f2937;
+            font-weight: 600;
+            font-size: 0.93rem;
         }
 
-        /* --- BOTÃO DE ÁUDIO GERAL --- */
-        .audio-btn-inline {
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 1.2rem;
-            vertical-align: middle;
-            margin-left: 5px;
-            padding: 0 5px;
-        }
-        
-        /* --- VOCABULÁRIO: GRID DE CARDS (Mobile First) --- */
+        /* --- GRID DE VOCABULÁRIO (30 CARDS) --- */
         .vocab-grid {
             display: grid;
-            grid-template-columns: 1fr;
-            gap: 15px;
-            margin: 20px 0;
-        }
-
-        @media (min-width: 600px) {
-            .vocab-grid {
-                grid-template-columns: 1fr 1fr;
-            }
+            grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+            gap: 12px;
+            margin: 16px 0 20px 0;
         }
 
         .vocab-item {
-            background: white;
-            border: 1px solid #e0e0e0;
+            background: #fff;
+            border: 1px solid var(--line);
             border-radius: 10px;
-            padding: 15px;
+            padding: 13px 14px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
-            transition: transform 0.2s;
+            gap: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            transition: transform 0.15s, border-color 0.15s;
+            page-break-inside: avoid;
         }
-        
-        .vocab-item:active { transform: scale(0.98); background-color: #fdfdfd; }
+        .vocab-item:hover { border-color: var(--blue); transform: translateY(-1px); }
 
-        .vocab-text {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-
-        .vocab-en {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: #2c3e50;
-        }
-
-        .vocab-ipa {
-            font-family: 'Roboto Mono', monospace;
-            font-size: 0.85rem;
-            color: #e67e22;
-        }
-
-        .vocab-pt {
-            font-size: 0.8rem;
-            color: #7f8c8d;
-            text-transform: uppercase;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            margin-top: 2px;
-        }
+        .vocab-text { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+        .vocab-en { font-size: 1.04rem; font-weight: 700; color: var(--navy); }
+        .vocab-ipa { font-family: 'Roboto Mono', monospace; font-size: 0.79rem; color: #c0392b; }
+        .vocab-phon { font-size: 0.8rem; color: #15803d; font-style: italic; font-weight: 600; }
+        .vocab-pt { font-size: 0.78rem; color: var(--muted); text-transform: uppercase; font-weight: 700; letter-spacing: 0.4px; margin-top: 2px; }
 
         .audio-btn-round {
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            background-color: #3498db;
-            color: white;
+            background-color: var(--blue);
+            color: #fff;
             border: none;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             cursor: pointer;
             flex-shrink: 0;
-            margin-left: 10px;
-            box-shadow: 0 2px 5px rgba(52, 152, 219, 0.3);
+            box-shadow: 0 2px 6px rgba(41, 128, 185, 0.25);
+            transition: background-color 0.2s, transform 0.1s;
         }
-        
-        .audio-btn-round:active { background-color: #2980b9; }
+        .audio-btn-round:hover { background-color: #1f618d; }
+        .audio-btn-round:active { transform: scale(0.93); }
 
-        /* --- GABARITO E EXERCÍCIOS --- */
-        .fill-in-blank {
-            display: inline-block;
-            min-width: 60px;
-            border-bottom: 2px solid #3498db;
-            text-align: center;
-            color: #3498db;
-            font-weight: bold;
-            padding: 0 5px;
+        /* --- HISTÓRIA E QUIZ INTERATIVO --- */
+        .story-card {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #e9d5ff;
+            margin: 14px 0 20px 0;
         }
+
+        .story-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 12px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #f3e8ff;
+        }
+
+        .quiz-container {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 18px;
+            margin-top: 14px;
+            page-break-inside: avoid;
+        }
+
+        .quiz-question { margin-bottom: 16px; padding-bottom: 14px; border-bottom: 1px solid #eee; }
+        .quiz-question:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+
+        .quiz-btn {
+            display: block;
+            width: 100%;
+            text-align: left;
+            padding: 11px 14px;
+            margin: 7px 0;
+            border: 2px solid #e2e8f0;
+            background-color: #f8fafc;
+            border-radius: 8px;
+            font-size: 0.94rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+            color: var(--ink);
+        }
+        .quiz-btn:hover:not(:disabled) { border-color: var(--purple); background-color: #faf5ff; }
+        .quiz-btn.correct { background-color: #dcfce7; border-color: #16a34a; color: #14532d; font-weight: 700; }
+        .quiz-btn.incorrect { background-color: #fee2e2; border-color: #dc2626; color: #7f1d1d; }
+        .quiz-feedback {
+            margin-top: 8px;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            display: none;
+        }
+
+        /* --- EXERCÍCIOS INTERATIVOS --- */
+        .exercise-input {
+            border: none;
+            border-bottom: 2px solid var(--blue);
+            background: #ffffff;
+            padding: 3px 8px;
+            margin: 0 4px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #1d4ed8;
+            min-width: 120px;
+            border-radius: 4px 4px 0 0;
+        }
+        .exercise-input.wide {
+            width: min(100%, 540px);
+            margin-top: 4px;
+        }
+        .exercise-input:focus { outline: none; background: #eff6ff; border-color: var(--teal); }
 
         details.gabarito {
-            margin-top: 20px;
-            background: #f8f9fa;
-            border: 1px solid #ddd;
+            margin-top: 16px;
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
             border-radius: 8px;
-            padding: 10px;
+            overflow: hidden;
         }
-        
         details.gabarito summary {
-            font-weight: bold;
+            font-weight: 700;
             cursor: pointer;
-            color: #2c3e50;
-            padding: 10px;
+            color: var(--navy);
+            padding: 13px 16px;
             list-style: none;
+            background: #f1f5f9;
         }
-        
-        details.gabarito summary::after { content: " 👇"; }
+        details.gabarito summary::after { content: " 👇"; float: right; }
         details.gabarito[open] summary::after { content: " 👆"; }
-
         .gabarito-content {
-            padding: 15px;
-            border-top: 1px solid #ddd;
-            color: #555;
+            padding: 14px 16px;
+            border-top: 1px solid #cbd5e1;
+            background: #fff;
+            font-size: 0.92rem;
+        }
+        .gabarito-content p { margin-bottom: 8px; }
+
+        /* --- RESPONSIVIDADE MOBILE --- */
+        @media (max-width: 720px) {
+            body { padding: 10px 6px 100px 6px; }
+            .container { padding: 16px 14px; border-radius: 10px; }
+            h1 { font-size: 1.4rem; }
+            h2 { font-size: 1.25rem; }
+            h3 { font-size: 1.1rem; }
+            table { min-width: 100%; }
+            .sentence-table thead { display: none; }
+            .sentence-table tr {
+                display: block;
+                border-bottom: 2px solid #e2e8f0;
+                padding: 10px 0;
+            }
+            .sentence-table td {
+                display: block;
+                width: 100%;
+                border: none;
+                padding: 5px 10px;
+            }
+            .pen-fab { bottom: 14px; right: 14px; padding: 11px 16px; font-size: 0.88rem; }
         }
 
-        .quiz-options {
-            list-style-type: lower-alpha;
-            padding-left: 20px;
+        /* --- IMPRESSÃO A4 EM PDF (COM AS OBSERVAÇÕES E DESENHOS DA CANETA!) --- */
+        @page { size: A4 portrait; margin: 10mm; }
+        @media print {
+            body { background-color: #fff; padding: 0; font-size: 9.5pt; }
+            .container { box-shadow: none; max-width: 100%; padding: 0; border-radius: 0; }
+            .top-actions, .notes-toolbar, .pen-fab, .pen-dock, .audio-btn-inline, .audio-btn-round, .audio-btn-pill, .search-box, .obs-save-badge, .toast-banner {
+                display: none !important;
+            }
+            .obs-textarea { display: none !important; }
+            .obs-box.empty-note { display: none !important; }
+            .obs-box.has-note { display: block !important; background: #fffbeb !important; border: 1px solid #f59e0b !important; padding: 8px 10px; margin: 8px 0 14px 0; }
+            .obs-box.has-note .obs-print-mirror { display: block !important; }
+            .vocab-item, tr, .theme-intro, .nota-dica, .nota-gramatical, .extra-task, .secao-exercicios, .quiz-container {
+                page-break-inside: avoid;
+            }
+            .vocab-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+            .vocab-item { padding: 7px 9px; }
+            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
         }
     </style>
 </head>
 <body>
+    <!-- BOTÃO FLUTUANTE DA CANETA (ACESSO RÁPIDO EM QUALQUER ALTURA DA AULA) -->
+    <button id="penFab" class="pen-fab" onclick="openPenDock('pen')" title="Ativar Caneta e Marca-texto sobre o livro">
+        ✏️ Caneta / Grifar
+    </button>
 
-    <div class="container">
-        <!-- Botão Navegação Topo -->
-        <button class="nav-btn" onclick="alert('Voltar ao Menu Principal')">⬅ Voltar ao Menu</button>
+    <!-- PAINEL FLUTUANTE DA CANETA / MARCA-TEXTO / BORRACHA -->
+    <div id="penDock" class="pen-dock" role="toolbar" aria-label="Ferramentas de desenho sobre a aula">
+        <div id="penModeBanner" class="pen-mode-banner">
+            ✏️ Modo Caneta ATIVO — Circule palavras ou faça anotações à mão sobre a aula (salvo automaticamente!)
+        </div>
+        <div class="pen-dock-row">
+            <button id="toolPenBtn" class="dock-btn active" onclick="setDrawTool('pen')">✏️ Caneta</button>
+            <button id="toolHighlightBtn" class="dock-btn" onclick="setDrawTool('highlighter')">🖍️ Marca-texto</button>
+            <button id="toolEraserBtn" class="dock-btn" onclick="setDrawTool('eraser')">🧹 Borracha</button>
 
-        <h1>Aula 28: O Que Teria Sido Diferente? – Condicional Tipo 3 (Hipotéticas no Passado) <span class="emoji-large">⏳🤔</span><br><span style="font-size: 0.8em; font-weight: normal;">(What Would Have Been Different? – Third Conditional (Past Hypotheticals))</span></h1>
+            <span class="dock-divider"></span>
+
+            <!-- PALETA DE CORES -->
+            <button class="color-swatch selected" data-color="#e11d48" style="background:#e11d48;" onclick="setDrawColor('#e11d48', this)" title="Vermelho"></button>
+            <button class="color-swatch" data-color="#2563eb" style="background:#2563eb;" onclick="setDrawColor('#2563eb', this)" title="Azul"></button>
+            <button class="color-swatch" data-color="#16a34a" style="background:#16a34a;" onclick="setDrawColor('#16a34a', this)" title="Verde"></button>
+            <button class="color-swatch" data-color="#facc15" style="background:#facc15;" onclick="setDrawColor('#facc15', this)" title="Amarelo (ótimo p/ marca-texto)"></button>
+            <button class="color-swatch" data-color="#9333ea" style="background:#9333ea;" onclick="setDrawColor('#9333ea', this)" title="Roxo"></button>
+            <button class="color-swatch" data-color="#1e293b" style="background:#1e293b;" onclick="setDrawColor('#1e293b', this)" title="Preto"></button>
+
+            <span class="dock-divider"></span>
+
+            <!-- ESPESSURA -->
+            <button class="size-pill" data-size="2.5" onclick="setPenSize(2.5, this)">Fina</button>
+            <button class="size-pill selected" data-size="4" onclick="setPenSize(4, this)">Média</button>
+            <button class="size-pill" data-size="7" onclick="setPenSize(7, this)">Grossa</button>
+        </div>
+        <div class="pen-dock-row">
+            <button class="dock-btn" onclick="undoLastStroke()">↩️ Desfazer</button>
+            <button id="toggleVisBtn" class="dock-btn" onclick="toggleDrawingsVisibility()">👁️ Ocultar traços</button>
+            <button class="dock-btn" onclick="showClearDrawConfirm()">🗑️ Limpar rabiscos</button>
+            <button class="dock-btn exit-btn" onclick="closePenDock()">✋ Voltar à Leitura</button>
+        </div>
+        <div id="clearDrawConfirm" class="inline-confirm" style="margin-top:2px;">
+            <span><strong>Apagar todos os desenhos?</strong> Suas observações escritas serão mantidas.</span>
+            <div style="display:flex; gap:8px;">
+                <button class="confirm-yes" onclick="confirmClearDrawings()">Sim, apagar desenhos</button>
+                <button class="confirm-no" onclick="hideClearDrawConfirm()">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container" id="lessonBook">
+        <!-- CAMADA SVG TRANSPARENTE PARA DESENHO SOBRE O LIVRO -->
+        <svg id="drawLayer" xmlns="http://www.w3.org/2000/svg"></svg>
+
+        <!-- BOTÕES SUPERIORES: MENU PRINCIPAL + PDF -->
+        <div class="top-actions">
+            <button class="nav-btn" onclick="location.href='https://espaco-liberdade.github.io/inglesipa/'">← Voltar ao Menu Principal</button>
+            <button class="pdf-btn" onclick="printWithNotes()">📄 Salvar como PDF (A4) com Marcações</button>
+        </div>
+
+        <h1>
+            Aula 28: O Que Teria Sido Diferente? – Condicional Tipo 3 (Hipotéticas no Passado) <span class="emoji-large">⏳🤔</span>
+            <span class="subtitle">(What Would Have Been Different? – Third Conditional: Past Hypotheticals | Método IPA)</span>
+        </h1>
 
         <div class="theme-intro">
-            <p>Bem-vindo(a) à Aula 28! <span class="emoji-small">✨</span></p>
-            <p>Hoje, vamos explorar o <strong>Third Conditional (Condicional Tipo 3)</strong>. Este tipo de condicional é usado para falar sobre <strong>situações hipotéticas no passado que não aconteceram</strong>, e seus <strong>resultados imaginários no passado</strong>. É perfeito para expressar <strong>arrependimentos, refletir sobre decisões passadas e suas consequências não realizadas</strong>. Prepare-se para pensar sobre "o que teria sido se..."! <span class="emoji-small">📜💭🔁</span></p>
+            <p><strong>Bem-vindo(a) à Aula 28!</strong> <span class="emoji-small">✨</span></p>
+            <p>Hoje, vamos explorar o <strong>Third Conditional (Condicional Tipo 3)</strong>. Este tipo de condicional é usado para falar sobre <strong>situações hipotéticas no passado que não aconteceram</strong> e seus <strong>resultados imaginários no passado</strong>. É perfeito para expressar <strong>arrependimentos, refletir sobre decisões passadas e suas consequências não realizadas</strong>. Prepare-se para pensar sobre "o que teria sido se..."! <span class="emoji-small">📜💭🔁</span></p>
+            <p style="margin-bottom: 0;"><strong>✏️ Livro Interativo Completo:</strong> Clique em <strong>✏️ Caneta / Grifar</strong> para circular palavras, passar marca-texto ou fazer setas diretamente sobre a aula, e use as caixas <strong>Minhas Observações</strong> ao fim de cada seção. Tudo fica <strong>salvo automaticamente no navegador</strong> e aparece ao salvar em PDF!</p>
         </div>
+
+        <!-- BARRA DE GERENCIAMENTO DAS OBSERVAÇÕES E CANETA -->
+        <div class="notes-toolbar">
+            <div class="notes-toolbar-status">
+                <span>📝</span>
+                <span id="notesSummary">Salvo automaticamente (0/6 observações · 0 traços da caneta)</span>
+            </div>
+            <button class="toolbar-btn pen-cta" onclick="openPenDock('pen')">✏️ Ativar Caneta</button>
+            <button class="toolbar-btn" onclick="openPenDock('highlighter')">🖍️ Marca-texto</button>
+            <button class="toolbar-btn" onclick="exportNotesTxt()">💾 Exportar Notas (.txt)</button>
+            <button class="toolbar-btn danger" onclick="showClearConfirm()">🗑️ Limpar Tudo</button>
+
+            <div id="clearConfirmBox" class="inline-confirm">
+                <span><strong>Tem certeza?</strong> Isso apagará todas as suas observações escritas, respostas dos exercícios e desenhos da Aula 28.</span>
+                <div style="display:flex; gap:8px;">
+                    <button class="confirm-yes" onclick="confirmClearAll()">Sim, apagar tudo</button>
+                    <button class="confirm-no" onclick="hideClearConfirm()">Cancelar</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="statusToast" class="toast-banner"></div>
 
         <h2>28. Imaginando um Passado Diferente: Third Conditional</h2>
 
-        <section id="third-conditional-intro">
+        <!-- ==================== SEÇÃO 28.1: INTRODUÇÃO AO THIRD CONDITIONAL ==================== -->
+        <section id="sec-28-1">
             <h3>28.1 O Passado que Não Aconteceu: Third Conditional <span class="emoji-small">⏪</span></h3>
-            <p>O <strong>Third Conditional</strong> é usado para falar sobre situações no passado que não aconteceram e imaginar qual teria sido o resultado se tivessem acontecido. Como a condição é impossível (porque se refere ao passado e não pode ser mudada), o resultado também é imaginário.</p>
-            <p><strong>Estrutura:</strong> If + Past Perfect (had + Particípio Passado), ... would have + Particípio Passado.</p>
+            <p>O <strong>Third Conditional</strong> é usado para falar sobre situações no passado que <strong>não aconteceram</strong> e imaginar qual teria sido o resultado se tivessem acontecido. Como a condição é impossível (porque se refere ao passado e não pode ser mudada), o resultado também é puramente imaginário.</p>
+            <div class="formula-pill">If + Past Perfect (had + V3), ... would have + Particípio Passado (V3)</div>
+
             <div class="nota-dica">
-                <h4>Variações com Modais <span class="emoji-small">💡</span></h4>
-                <p>Na oração principal, você pode substituir <strong>"would have"</strong> por <strong>"could have"</strong> (teria podido/conseguido) ou <strong>"might have"</strong> (talvez tivesse) para expressar diferentes nuances de possibilidade ou capacidade hipotética no passado.</p>
-                <p>Ex: If we had left earlier, we <span class="example-word">might have caught</span> the train. (Se tivéssemos saído mais cedo, talvez tivéssemos pegado o trem.)</p>
+                <h4>💡 Variações com Modais e Contrações na Fala Real</h4>
+                <p>Na oração principal, você pode substituir <strong>"would have"</strong> por <strong>"could have"</strong> (teria podido / conseguido) ou <strong>"might have"</strong> (talvez tivesse) para expressar diferentes nuances de possibilidade ou capacidade hipotética no passado.</p>
+                <div class="example-line">
+                    <strong>If we had left earlier, we <span class="example-word">might have caught</span> the train.</strong>
+                    <button class="audio-btn-inline" onclick="playAudio('If we had left earlier, we might have caught the train.')" title="Ouvir frase">🔊</button>
+                    <span class="ipa-symbol" style="margin-left:6px;">/ɪf wiː hæd left ˈɜːrliər wiː maɪt həv kɔːt ðə treɪn/</span>
+                    <span class="character-portuguese-phonetics">(ÊF uíi réd LÉFT ÃR-li-ãr, uíi MÁIT rãv CÓT dhã TRÊIN)</span>
+                    <span class="details-translation">Se tivéssemos saído mais cedo, talvez tivéssemos pegado o trem.</span>
+                </div>
+                <p style="margin-bottom:0;"><strong>🎧 Dica de Pronúncia:</strong> Na fala cotidiana, os nativos quase sempre contraem <strong>had</strong> para <strong>'d</strong> (<em>If I'd known</em>) e <strong>would have / could have / might have</strong> para <strong>would've</strong> (<em>UÚ-dãv</em>), <strong>could've</strong> (<em>CÚ-dãv</em>) e <strong>might've</strong> (<em>MÁI-rãv</em>).</p>
+            </div>
+
+            <div class="obs-box empty-note" data-obs-wrapper="obs_28_1">
+                <div class="obs-header">
+                    <label class="obs-title" for="obs_28_1">📝 Minhas Observações – Seção 28.1 (Estrutura e Modais)</label>
+                    <span class="obs-save-badge" id="badge_obs_28_1">✓ Salvo no navegador</span>
+                </div>
+                <textarea id="obs_28_1" class="obs-textarea" data-section-name="28.1 Estrutura do Third Conditional" placeholder="Anote aqui a fórmula If + had + V3, would/could/might have + V3 ou dicas de pronúncia..."></textarea>
+                <div class="obs-print-mirror" id="mirror_obs_28_1"></div>
             </div>
         </section>
 
-        <section id="third-conditional-practice">
-            <h3>28.2 Prática: Arrependimentos e Oportunidades Perdidas <span class="emoji-small">💭🔁</span></h3>
-            <p>Vamos praticar com exemplos fiéis ao arquivo original, focando em como as coisas poderiam ter sido diferentes.</p>
+        <!-- ==================== SEÇÃO 28.2: 31 FRASES PRÁTICAS ==================== -->
+        <section id="sec-28-2">
+            <h3>28.2 Prática: Arrependimentos e Oportunidades Perdidas (31 Frases) <span class="emoji-small">💭🔁</span></h3>
+            <p>Vamos praticar com os <strong>31 exemplos completos</strong> da aula (com contrações naturais, IPA completo, guia fonético e tradução), focando em como as coisas poderiam ter sido diferentes:</p>
+
+            <div class="search-box">
+                <input type="text" id="sentenceSearch" class="search-input" placeholder="🔍 Filtrar nas 31 frases (ex: traffic, party, tickets, alarm, internet, concert, could've, might've)..." onkeyup="filterSentences()">
+            </div>
+
             <div class="table-responsive-wrapper">
-                <table>
+                <table class="sentence-table">
                     <thead>
                         <tr>
-                            <th style="width: 45%;">Frase em Inglês</th>
-                            <th>Detalhes (IPA / Tradução)</th>
+                            <th style="width: 45%;">Frase em Inglês (com contrações) + Áudio</th>
+                            <th style="width: 55%;">Pronúncia Completa (IPA + Simplificada) e Tradução</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <!-- 1 -->
-                        <tr>
-                            <td>If I <span class="example-word">'d known</span> about the traffic, I <span class="example-word">'d have left</span> earlier. <button class="audio-btn-inline" onclick="playAudio('If I had known about the traffic, I would have left earlier.')">🔊</button></td>
-                            <td class="details-cell"><span class="ipa-symbol">/ɪf aɪd noʊn əˈbaʊt ðə ˈtræfɪk.../</span><br><span class="character-portuguese-phonetics">(ÊF áid NÔUN ã-BÁUT dhã TRÉ-fêk...)</span><span class="details-translation">Se eu soubesse do trânsito, eu teria saído mais cedo.</span></td>
-                        </tr>
-                        <!-- 2 -->
-                        <tr>
-                            <td>She <span class="example-word">would've called</span> you if her phone <span class="example-word">hadn't died</span>. <button class="audio-btn-inline" onclick="playAudio('She would have called you if her phone hadn\'t died.')">🔊</button></td>
-                            <td class="details-cell"><span class="ipa-symbol">/ʃiː ˈwʊdəv kɔːld juː.../</span><br><span class="character-portuguese-phonetics">(XÍI UÚ-dãv CÓLD iúu...)</span><span class="details-translation">Ela teria te ligado se o telefone dela não tivesse descarregado.</span></td>
-                        </tr>
-                        <!-- 3 -->
-                        <tr>
-                            <td>If we<span class="example-word">'d saved</span> more money, we <span class="example-word">could've bought</span> a new car. <button class="audio-btn-inline" onclick="playAudio('If we had saved more money, we could have bought a new car.')">🔊</button></td>
-                            <td class="details-cell"><span class="ipa-symbol">/ɪf wiːd seɪvd mɔːr ˈmʌni.../</span><br><span class="character-portuguese-phonetics">(ÊF uíid SÊIVD MÓR MÂ-ni...)</span><span class="details-translation">Se tivéssemos economizado mais dinheiro, poderíamos ter comprado um carro novo.</span></td>
-                        </tr>
-                        <!-- 4 -->
-                        <tr>
-                            <td>They <span class="example-word">might've won</span> if the star player <span class="example-word">hadn't been</span> injured. <button class="audio-btn-inline" onclick="playAudio('They might have won if the star player hadn\'t been injured.')">🔊</button></td>
-                            <td class="details-cell"><span class="ipa-symbol">/ðeɪ maɪt həv wʌn ɪf ðə stɑːr ˈpleɪər.../</span><br><span class="character-portuguese-phonetics">(DHÊI MÁIT rãv UÂN êf dhã STÁR PLÊI-ãr...)</span><span class="details-translation">Eles talvez tivessem ganhado o jogo se o jogador estrela não estivesse machucado.</span></td>
-                        </tr>
-                        <!-- 5 -->
-                        <tr>
-                            <td>If he<span class="example-word">'d taken</span> that job, his life <span class="example-word">would've been</span> very different. <button class="audio-btn-inline" onclick="playAudio('If he had taken that job, his life would have been very different.')">🔊</button></td>
-                            <td class="details-cell"><span class="ipa-symbol">/ɪf hiːd ˈteɪkən ðæt dʒɑːb.../</span><br><span class="character-portuguese-phonetics">(ÊF ríid TÊI-cãn DHÉT DJÓB...)</span><span class="details-translation">Se ele tivesse aceitado aquele emprego, a vida dele teria sido muito diferente.</span></td>
-                        </tr>
-                        <!-- 6 -->
-                        <tr>
-                            <td>I <span class="example-word">would've gone</span> to the party if I<span class="example-word">'d known</span> you were going. <button class="audio-btn-inline" onclick="playAudio('I would have gone to the party if I had known you were going.')">🔊</button></td>
-                            <td class="details-cell"><span class="ipa-symbol">/aɪ ˈwʊdəv ɡɔːn tə ðə ˈpɑːrti.../</span><br><span class="character-portuguese-phonetics">(ÁI UÚ-dãv GÓN tã dhã PÁR-ti...)</span><span class="details-translation">Eu teria ido à festa se soubesse que você ia.</span></td>
-                        </tr>
-                        <!-- 7 -->
-                        <tr>
-                            <td>If she <span class="example-word">hadn't missed</span> the bus, she <span class="example-word">wouldn't have been</span> late for work. <button class="audio-btn-inline" onclick="playAudio('If she hadn\'t missed the bus, she wouldn\'t have been late for work.')">🔊</button></td>
-                            <td class="details-cell"><span class="ipa-symbol">/ɪf ʃiː ˈhædnt mɪst ðə bʌs.../</span><br><span class="character-portuguese-phonetics">(ÊF xíi RÉ-dãnt MÊST dhã BÂS...)</span><span class="details-translation">Se ela não tivesse perdido o ônibus, ela não teria se atrasado para o trabalho.</span></td>
-                        </tr>
-                        <!-- 8 -->
-                        <tr>
-                            <td>We <span class="example-word">could've helped</span> if we<span class="example-word">'d known</span> you needed assistance. <button class="audio-btn-inline" onclick="playAudio('We could have helped if we had known you needed assistance.')">🔊</button></td>
-                            <td class="details-cell"><span class="ipa-symbol">/wiː kəd həv helpt ɪf wiːd noʊn.../</span><br><span class="character-portuguese-phonetics">(UÍI cãd rãv RÉLPT êf uíid NÔUN...)</span><span class="details-translation">Nós poderíamos ter ajudado se soubéssemos que você precisava de assistência.</span></td>
-                        </tr>
-                        <!-- 9 -->
-                        <tr>
-                            <td>If they<span class="example-word">'d studied</span> more, they <span class="example-word">'d have understood</span> the lesson. <button class="audio-btn-inline" onclick="playAudio('If they had studied more, they would have understood the lesson.')">🔊</button></td>
-                            <td class="details-cell"><span class="ipa-symbol">/ɪf ðeɪd ˈstʌdid mɔːr.../</span><br><span class="character-portuguese-phonetics">(ÊF dhêid STÂ-did MÓR...)</span><span class="details-translation">Se eles tivessem estudado mais, eles teriam entendido a lição.</span></td>
-                        </tr>
-                        <!-- 10 -->
-                        <tr>
-                            <td>He <span class="example-word">would've bought</span> the house if he<span class="example-word">'d had</span> enough money. <button class="audio-btn-inline" onclick="playAudio('He would have bought the house if he had had enough money.')">🔊</button></td>
-                            <td class="details-cell"><span class="ipa-symbol">/hiː ˈwʊdəv bɔːt ðə haʊs ɪf hiːd hæd.../</span><br><span class="character-portuguese-phonetics">(RÍI UÚ-dãv BÓT dhã RÁUS êf ríid RÉD...)</span><span class="details-translation">Ele teria comprado a casa se tivesse tido dinheiro suficiente.</span></td>
-                        </tr>
-                        <!-- 11 -->
-                        <tr>
-                            <td>If I <span class="example-word">hadn't been</span> so tired, I <span class="example-word">would've gone</span> out. <button class="audio-btn-inline" onclick="playAudio('If I hadn\'t been so tired, I would have gone out.')">🔊</button></td>
-                            <td class="details-cell"><span class="ipa-symbol">/ɪf aɪ ˈhædnt bɪn soʊ ˈtaɪərd.../</span><br><span class="character-portuguese-phonetics">(ÊF ái RÉ-dãnt bên sôu TÁI-ãrd...)</span><span class="details-translation">Se eu não estivesse tão cansado, eu teria saído.</span></td>
-                        </tr>
-                        <!-- 12 -->
-                        <tr>
-                            <td>She <span class="example-word">would've finished</span> the race if she <span class="example-word">hadn't fallen</span>. <button class="audio-btn-inline" onclick="playAudio('She would have finished the race if she hadn\'t fallen.')">🔊</button></td>
-                            <td class="details-cell"><span class="ipa-symbol">/ʃiː ˈwʊdəv ˈfɪnɪʃt ðə reɪs.../</span><br><span class="character-portuguese-phonetics">(XÍI UÚ-dãv FÊ-nêsht dhã RÊIS...)</span><span class="details-translation">Ela teria terminado a corrida se não tivesse caído.</span></td>
-                        </tr>
-                        <!-- 13 -->
-                        <tr>
-                            <td>If we<span class="example-word">'d booked</span> earlier, we <span class="example-word">could've gotten</span> cheaper tickets. <button class="audio-btn-inline" onclick="playAudio('If we had booked earlier, we could have gotten cheaper tickets.')">🔊</button></td>
-                            <td class="details-cell"><span class="ipa-symbol">/ɪf wiːd bʊkt ˈɜːrliər.../</span><br><span class="character-portuguese-phonetics">(ÊF uíid BÚKT ÃR-li-ãr...)</span><span class="details-translation">Se tivéssemos reservado mais cedo, poderíamos ter conseguido ingressos mais baratos.</span></td>
-                        </tr>
-                        <!-- 14 -->
-                        <tr>
-                            <td>They <span class="example-word">wouldn't have been</span> surprised if they<span class="example-word">'d known</span> the plan. <button class="audio-btn-inline" onclick="playAudio('They wouldn\'t have been surprised if they had known the plan.')">🔊</button></td>
-                            <td class="details-cell"><span class="ipa-symbol">/ðeɪ ˈwʊdnt həv bɪn sərˈpraɪzd.../</span><br><span class="character-portuguese-phonetics">(DHÊI UÚ-dãnt rãv bên sãr-PRÁIZD...)</span><span class="details-translation">Eles não teriam ficado surpresos se soubessem do plano.</span></td>
-                        </tr>
-                        <!-- 15 -->
-                        <tr>
-                            <td>If you<span class="example-word">'d told</span> me, I <span class="example-word">'d have helped</span> you move. <button class="audio-btn-inline" onclick="playAudio('If you had told me, I would have helped you move.')">🔊</button></td>
-                            <td class="details-cell"><span class="ipa-symbol">/ɪf juːd toʊld miː.../</span><br><span class="character-portuguese-phonetics">(ÊF iúud TÔULD míi...)</span><span class="details-translation">Se você tivesse me contado, eu teria te ajudado a se mudar.</span></td>
-                        </tr>
-                        <!-- 16 -->
-                        <tr>
-                            <td>He <span class="example-word">might've passed</span> the interview if he<span class="example-word">'d prepared</span> more. <button class="audio-btn-inline" onclick="playAudio('He might have passed the interview if he had prepared more.')">🔊</button></td>
-                            <td class="details-cell"><span class="ipa-symbol">/hiː maɪt həv pæst ði ˈɪntərvjuː.../</span><br><span class="character-portuguese-phonetics">(RÍI MÁIT rãv PÉST dhí ÊN-tãr-viúu...)</span><span class="details-translation">Ele talvez tivesse passado na entrevista se tivesse se preparado mais.</span></td>
-                        </tr>
-                        <!-- 17 -->
-                        <tr>
-                            <td>If the alarm <span class="example-word">hadn't gone off</span>, I <span class="example-word">would've overslept</span>. <button class="audio-btn-inline" onclick="playAudio('If the alarm hadn\'t gone off, I would have overslept.')">🔊</button></td>
-                            <td class="details-cell"><span class="ipa-symbol">/ɪf ði əˈlɑːrm ˈhædnt ɡɔːn ɔːf.../</span><br><span class="character-portuguese-phonetics">(ÊF dhí ã-LÁRM RÉ-dãnt GÓN ÓF...)</span><span class="details-translation">Se o alarme não tivesse tocado, eu teria dormido demais.</span></td>
-                        </tr>
-                        <!-- 18 -->
-                        <tr>
-                            <td>She <span class="example-word">would've bought</span> the dress if it <span class="example-word">had been</span> on sale. <button class="audio-btn-inline" onclick="playAudio('She would have bought the dress if it had been on sale.')">🔊</button></td>
-                            <td class="details-cell"><span class="ipa-symbol">/ʃiː ˈwʊdəv bɔːt ðə dres.../</span><br><span class="character-portuguese-phonetics">(XÍI UÚ-dãv BÓT dhã DRÉS...)</span><span class="details-translation">Ela teria comprado o vestido se estivesse em promoção.</span></td>
-                        </tr>
-                        <!-- 19 -->
-                        <tr>
-                            <td>If we <span class="example-word">hadn't forgotten</span> the map, we <span class="example-word">wouldn't have needed</span> to ask for directions. <button class="audio-btn-inline" onclick="playAudio('If we hadn\'t forgotten the map, we wouldn\'t have needed to ask for directions.')">🔊</button></td>
-                            <td class="details-cell"><span class="ipa-symbol">/ɪf wiː ˈhædnt fərˈɡɑːtn ðə mæp.../</span><br><span class="character-portuguese-phonetics">(ÊF uíi RÉ-dãnt fór-GÓ-tãn dhã MÉP...)</span><span class="details-translation">Se não tivéssemos esquecido o mapa, não teríamos precisado pedir direções.</span></td>
-                        </tr>
-                        <!-- 20 -->
-                        <tr>
-                            <td>They <span class="example-word">could've seen</span> the show if they<span class="example-word">'d arrived</span> earlier. <button class="audio-btn-inline" onclick="playAudio('They could have seen the show if they had arrived earlier.')">🔊</button></td>
-                            <td class="details-cell"><span class="ipa-symbol">/ðeɪ kəd həv siːn ðə ʃoʊ.../</span><br><span class="character-portuguese-phonetics">(DHÊI cãd rãv SÍIN dhã XÔU...)</span><span class="details-translation">Eles poderiam ter visto o show se tivessem chegado mais cedo.</span></td>
-                        </tr>
-                        <!-- 21 -->
-                        <tr>
-                            <td>If I<span class="example-word">'d listened</span> to your advice, I <span class="example-word">wouldn't have made</span> that mistake. <button class="audio-btn-inline" onclick="playAudio('If I had listened to your advice, I wouldn\'t have made that mistake.')">🔊</button></td>
-                            <td class="details-cell"><span class="ipa-symbol">/ɪf aɪd ˈlɪsnd tə jɔːr ædˈvaɪs.../</span><br><span class="character-portuguese-phonetics">(ÊF áid LÊ-sãnd tã iór éd-VÁIS...)</span><span class="details-translation">Se eu tivesse ouvido seu conselho, não teria cometido aquele erro.</span></td>
-                        </tr>
-                        <!-- 22 -->
-                        <tr>
-                            <td>The company <span class="example-word">might've succeeded</span> if it <span class="example-word">had had</span> better marketing. <button class="audio-btn-inline" onclick="playAudio('The company might\'ve succeeded if it had had better marketing.')">🔊</button></td>
-                            <td class="details-cell"><span class="ipa-symbol">/ðə ˈkʌmpəni maɪt həv səkˈsiːdɪd.../</span><br><span class="character-portuguese-phonetics">(dhã CÂM-pã-ni MÁIT rãv sãk-SÍI-dêd...)</span><span class="details-translation">A empresa talvez tivesse tido sucesso se tivesse tido um marketing melhor.</span></td>
-                        </tr>
-                        <!-- 23 -->
-                        <tr>
-                            <td>If you <span class="example-word">hadn't helped</span> me, I <span class="example-word">would have been</span> in big trouble. <button class="audio-btn-inline" onclick="playAudio('If you hadn\'t helped me, I would have been in big trouble.')">🔊</button></td>
-                            <td class="details-cell"><span class="ipa-symbol">/ɪf juː ˈhædnt helpt miː.../</span><br><span class="character-portuguese-phonetics">(ÊF iúu RÉ-dãnt RÉLPT míi...)</span><span class="details-translation">Se você não tivesse me ajudado, eu estaria em grandes apuros.</span></td>
-                        </tr>
-                        <!-- 24 -->
-                        <tr>
-                            <td>He <span class="example-word">would've felt</span> better if he <span class="example-word">had rested</span> more. <button class="audio-btn-inline" onclick="playAudio('He would have felt better if he had rested more.')">🔊</button></td>
-                            <td class="details-cell"><span class="ipa-symbol">/hiː ˈwʊdəv felt ˈbetər.../</span><br><span class="character-portuguese-phonetics">(RÍI UÚ-dãv FÉLT BÉ-tãr...)</span><span class="details-translation">Ele teria se sentido melhor se tivesse descansado mais.</span></td>
-                        </tr>
-                        <!-- 25 -->
-                        <tr>
-                            <td>If I <span class="example-word">had found</span> my keys, I <span class="example-word">could've opened</span> the door. <button class="audio-btn-inline" onclick="playAudio('If I had found my keys, I could\'ve opened the door.')">🔊</button></td>
-                            <td class="details-cell"><span class="ipa-symbol">/ɪf aɪ hæd faʊnd maɪ kiːz.../</span><br><span class="character-portuguese-phonetics">(ÊF ái réd FÁUND mái KÍIZ...)</span><span class="details-translation">Se eu tivesse encontrado minhas chaves, eu poderia ter aberto a porta.</span></td>
-                        </tr>
-                        <!-- 26 -->
-                        <tr>
-                            <td>What <span class="example-word">would have happened</span> if the internet <span class="example-word">hadn't been</span> invented? <button class="audio-btn-inline" onclick="playAudio('What would have happened if the internet hadn\'t been invented?')">🔊</button></td>
-                            <td class="details-cell"><span class="ipa-symbol">/wʌt wəd həv ˈhæpənd.../</span><br><span class="character-portuguese-phonetics">(UÓT uãd rãv RÉ-pãnd...)</span><span class="details-translation">O que teria acontecido se a internet não tivesse sido inventada?</span></td>
-                        </tr>
-                        <!-- 27 -->
-                        <tr>
-                            <td>If you <span class="example-word">had been</span> there, you <span class="example-word">would have loved</span> the concert. <button class="audio-btn-inline" onclick="playAudio('If you had been there, you would have loved the concert.')">🔊</button></td>
-                            <td class="details-cell"><span class="ipa-symbol">/ɪf juː hæd bɪn ðer.../</span><br><span class="character-portuguese-phonetics">(ÊF iúu réd BÊN dhér...)</span><span class="details-translation">Se você estivesse lá, você teria amado o show.</span></td>
-                        </tr>
-                        <!-- 28 -->
-                        <tr>
-                            <td>The project <span class="example-word">would have been</span> a success if they <span class="example-word">had collaborated</span> better. <button class="audio-btn-inline" onclick="playAudio('The project would have been a success if they had collaborated better.')">🔊</button></td>
-                            <td class="details-cell"><span class="ipa-symbol">/ðə ˈprɑːdʒekt wəd həv bɪn ə səkˈses.../</span><br><span class="character-portuguese-phonetics">(dhã PRÓ-djekt uãd rãv bên ã sãk-SÉS...)</span><span class="details-translation">O projeto teria sido um sucesso se eles tivessem colaborado melhor.</span></td>
-                        </tr>
-                        <!-- 29 -->
-                        <tr>
-                            <td>If I <span class="example-word">hadn't spent</span> all my money, I <span class="example-word">could have bought</span> that souvenir. <button class="audio-btn-inline" onclick="playAudio('If I hadn\'t spent all my money, I could have bought that souvenir.')">🔊</button></td>
-                            <td class="details-cell"><span class="ipa-symbol">/ɪf aɪ ˈhædnt spent ɔːl maɪ ˈmʌni.../</span><br><span class="character-portuguese-phonetics">(ÊF ái RÉ-dãnt SPÉNT ól mái MÂ-ni...)</span><span class="details-translation">Se eu não tivesse gastado todo o meu dinheiro, poderia ter comprado aquela lembrancinha.</span></td>
-                        </tr>
-                        <!-- 30 -->
-                        <tr>
-                            <td>She <span class="example-word">might have understood</span> if you <span class="example-word">had explained</span> the situation in French. <button class="audio-btn-inline" onclick="playAudio('She might have understood if you had explained the situation in French.')">🔊</button></td>
-                            <td class="details-cell"><span class="ipa-symbol">/ʃiː maɪt həv ˌʌndərˈstʊd.../</span><br><span class="character-portuguese-phonetics">(XÍI MÁIT rãv ân-dãr-STÚD...)</span><span class="details-translation">Ela talvez tivesse entendido se você tivesse explicado a situação em francês.</span></td>
-                        </tr>
-                        <!-- 31 -->
-                        <tr>
-                            <td>If the team <span class="example-word">had practiced</span> more, they <span class="example-word">wouldn't have lost</span> the final match. <button class="audio-btn-inline" onclick="playAudio('If the team had practiced more, they wouldn\'t have lost the final match.')">🔊</button></td>
-                            <td class="details-cell"><span class="ipa-symbol">/ɪf ðə tiːm hæd ˈpræktɪst mɔːr.../</span><br><span class="character-portuguese-phonetics">(ÊF dhã TÍIM réd PRÉK-têst MÓR...)</span><span class="details-translation">Se o time tivesse treinado mais, eles não teriam perdido a partida final.</span></td>
-                        </tr>
-                    </tbody>
+                    <tbody id="sentencesTableBody"></tbody>
                 </table>
             </div>
-        </section>
 
-        <section id="vocabulario">
-            <h3>Vocabulário da Aula: Arrependimentos e Oportunidades 📚</h3>
-            <p>Palavras fundamentais para falar sobre o passado irreal.</p>
-            <div class="vocab-grid">
-                <div class="vocab-item"><div class="vocab-text"><span class="vocab-en">Regret</span><span class="vocab-ipa">/rɪˈɡret/</span><span class="vocab-pt">ARREPENDIMENTO</span></div><button class="audio-btn-round" onclick="playAudio('Regret')">🔊</button></div>
-                <div class="vocab-item"><div class="vocab-text"><span class="vocab-en">Opportunity</span><span class="vocab-ipa">/ˌɑːpərˈtuːnəti/</span><span class="vocab-pt">OPORTUNIDADE</span></div><button class="audio-btn-round" onclick="playAudio('Opportunity')">🔊</button></div>
-                <div class="vocab-item"><div class="vocab-text"><span class="vocab-en">Decision</span><span class="vocab-ipa">/dɪˈsɪʒn/</span><span class="vocab-pt">DECISÃO</span></div><button class="audio-btn-round" onclick="playAudio('Decision')">🔊</button></div>
-                <div class="vocab-item"><div class="vocab-text"><span class="vocab-en">Consequence</span><span class="vocab-ipa">/ˈkɑːnsəkwens/</span><span class="vocab-pt">CONSEQUÊNCIA</span></div><button class="audio-btn-round" onclick="playAudio('Consequence')">🔊</button></div>
-                <div class="vocab-item"><div class="vocab-text"><span class="vocab-en">Mistake</span><span class="vocab-ipa">/mɪˈsteɪk/</span><span class="vocab-pt">ERRO / ENGANO</span></div><button class="audio-btn-round" onclick="playAudio('Mistake')">🔊</button></div>
-                <div class="vocab-item"><div class="vocab-text"><span class="vocab-en">Outcome</span><span class="vocab-ipa">/ˈaʊtkʌm/</span><span class="vocab-pt">RESULTADO</span></div><button class="audio-btn-round" onclick="playAudio('Outcome')">🔊</button></div>
-                <div class="vocab-item"><div class="vocab-text"><span class="vocab-en">Reflect</span><span class="vocab-ipa">/rɪˈflekt/</span><span class="vocab-pt">REFLETIR</span></div><button class="audio-btn-round" onclick="playAudio('Reflect')">🔊</button></div>
-                <div class="vocab-item"><div class="vocab-text"><span class="vocab-en">Imagine</span><span class="vocab-ipa">/ɪˈmædʒɪn/</span><span class="vocab-pt">IMAGINAR</span></div><button class="audio-btn-round" onclick="playAudio('Imagine')">🔊</button></div>
-                <div class="vocab-item"><div class="vocab-text"><span class="vocab-en">Differently</span><span class="vocab-ipa">/ˈdɪfrəntli/</span><span class="vocab-pt">DIFERENTEMENTE</span></div><button class="audio-btn-round" onclick="playAudio('Differently')">🔊</button></div>
-                <div class="vocab-item"><div class="vocab-text"><span class="vocab-en">Alternatively</span><span class="vocab-ipa">/ɔːlˈtɜːrnətɪvli/</span><span class="vocab-pt">ALTERNATIVAMENTE</span></div><button class="audio-btn-round" onclick="playAudio('Alternatively')">🔊</button></div>
-                <div class="vocab-item"><div class="vocab-text"><span class="vocab-en">Avoid</span><span class="vocab-ipa">/əˈvɔɪd/</span><span class="vocab-pt">EVITAR</span></div><button class="audio-btn-round" onclick="playAudio('Avoid')">🔊</button></div>
-                <div class="vocab-item"><div class="vocab-text"><span class="vocab-en">Prevent</span><span class="vocab-ipa">/prɪˈvent/</span><span class="vocab-pt">PREVENIR</span></div><button class="audio-btn-round" onclick="playAudio('Prevent')">🔊</button></div>
-                <div class="vocab-item"><div class="vocab-text"><span class="vocab-en">Succeed</span><span class="vocab-ipa">/səkˈsiːd/</span><span class="vocab-pt">TER SUCESSO</span></div><button class="audio-btn-round" onclick="playAudio('Succeed')">🔊</button></div>
-                <div class="vocab-item"><div class="vocab-text"><span class="vocab-en">Fail</span><span class="vocab-ipa">/feɪl/</span><span class="vocab-pt">FALHAR / REPROVAR</span></div><button class="audio-btn-round" onclick="playAudio('Fail')">🔊</button></div>
-                <div class="vocab-item"><div class="vocab-text"><span class="vocab-en">Achieve</span><span class="vocab-ipa">/əˈtʃiːv/</span><span class="vocab-pt">ALCANÇAR</span></div><button class="audio-btn-round" onclick="playAudio('Achieve')">🔊</button></div>
-                <div class="vocab-item"><div class="vocab-text"><span class="vocab-en">Miss (opportunity)</span><span class="vocab-ipa">/mɪs/</span><span class="vocab-pt">PERDER (CHANCE)</span></div><button class="audio-btn-round" onclick="playAudio('Miss')">🔊</button></div>
-                <div class="vocab-item"><div class="vocab-text"><span class="vocab-en">Correct</span><span class="vocab-ipa">/kəˈrekt/</span><span class="vocab-pt">CORRIGIR</span></div><button class="audio-btn-round" onclick="playAudio('Correct')">🔊</button></div>
-                <div class="vocab-item"><div class="vocab-text"><span class="vocab-en">Alter</span><span class="vocab-ipa">/ˈɔːltər/</span><span class="vocab-pt">ALTERAR</span></div><button class="audio-btn-round" onclick="playAudio('Alter')">🔊</button></div>
-                <div class="vocab-item"><div class="vocab-text"><span class="vocab-en">Reconsider</span><span class="vocab-ipa">/ˌriːkənˈsɪdər/</span><span class="vocab-pt">RECONSIDERAR</span></div><button class="audio-btn-round" onclick="playAudio('Reconsider')">🔊</button></div>
-                <div class="vocab-item"><div class="vocab-text"><span class="vocab-en">Lament</span><span class="vocab-ipa">/ləˈment/</span><span class="vocab-pt">LAMENTAR</span></div><button class="audio-btn-round" onclick="playAudio('Lament')">🔊</button></div>
-                <div class="vocab-item"><div class="vocab-text"><span class="vocab-en">Turning point</span><span class="vocab-ipa">/ˈtɜːrnɪŋ pɔɪnt/</span><span class="vocab-pt">PONTO DE VIRADA</span></div><button class="audio-btn-round" onclick="playAudio('Turning point')">🔊</button></div>
-                <div class="vocab-item"><div class="vocab-text"><span class="vocab-en">Crucial moment</span><span class="vocab-ipa">/ˈkruːʃl ˈmoʊmənt/</span><span class="vocab-pt">MOMENTO CRUCIAL</span></div><button class="audio-btn-round" onclick="playAudio('Crucial moment')">🔊</button></div>
-                <div class="vocab-item"><div class="vocab-text"><span class="vocab-en">Hindsight</span><span class="vocab-ipa">/ˈhaɪndsaɪt/</span><span class="vocab-pt">RETROSPECTIVA</span></div><button class="audio-btn-round" onclick="playAudio('Hindsight')">🔊</button></div>
-                <div class="vocab-item"><div class="vocab-text"><span class="vocab-en">Foresight</span><span class="vocab-ipa">/ˈfɔːrsaɪt/</span><span class="vocab-pt">PREVISÃO</span></div><button class="audio-btn-round" onclick="playAudio('Foresight')">🔊</button></div>
-                <div class="vocab-item"><div class="vocab-text"><span class="vocab-en">Unforgettable</span><span class="vocab-ipa">/ˌʌnfərˈɡetəbl/</span><span class="vocab-pt">INESQUECÍVEL</span></div><button class="audio-btn-round" onclick="playAudio('Unforgettable')">🔊</button></div>
-                <div class="vocab-item"><div class="vocab-text"><span class="vocab-en">Impactful</span><span class="vocab-ipa">/ˈɪmpæktfl/</span><span class="vocab-pt">IMPACTANTE</span></div><button class="audio-btn-round" onclick="playAudio('Impactful')">🔊</button></div>
-                <div class="vocab-item"><div class="vocab-text"><span class="vocab-en">Choice</span><span class="vocab-ipa">/tʃɔɪs/</span><span class="vocab-pt">ESCOLHA</span></div><button class="audio-btn-round" onclick="playAudio('Choice')">🔊</button></div>
-                <div class="vocab-item"><div class="vocab-text"><span class="vocab-en">Path / Route</span><span class="vocab-ipa">/pæθ/ /ruːt/</span><span class="vocab-pt">CAMINHO / ROTA</span></div><button class="audio-btn-round" onclick="playAudio('Path. Route')">🔊</button></div>
-                <div class="vocab-item"><div class="vocab-text"><span class="vocab-en">Decisive</span><span class="vocab-ipa">/dɪˈsaɪsɪv/</span><span class="vocab-pt">DECISIVO</span></div><button class="audio-btn-round" onclick="playAudio('Decisive')">🔊</button></div>
-                <div class="vocab-item"><div class="vocab-text"><span class="vocab-en">Influential</span><span class="vocab-ipa">/ˌɪnfluˈenʃl/</span><span class="vocab-pt">INFLUENTE</span></div><button class="audio-btn-round" onclick="playAudio('Influential')">🔊</button></div>
+            <div class="obs-box empty-note" data-obs-wrapper="obs_28_2">
+                <div class="obs-header">
+                    <label class="obs-title" for="obs_28_2">📝 Minhas Observações – Seção 28.2 (31 Frases Práticas)</label>
+                    <span class="obs-save-badge" id="badge_obs_28_2">✓ Salvo no navegador</span>
+                </div>
+                <textarea id="obs_28_2" class="obs-textarea" data-section-name="28.2 Frases de Prática" placeholder="Anote quais verbos no particípio (V3) você precisou revisar ou crie seus próprios exemplos..."></textarea>
+                <div class="obs-print-mirror" id="mirror_obs_28_2"></div>
             </div>
         </section>
 
-        <section id="tarefa-extra" class="extra-task">
-            <h3>Tarefa Extra ✍️</h3>
-            <h4>Translate the Text</h4>
-            <p>Read the text below about a historical "what if" scenario. Pay close attention to the use of the Third Conditional to explore past possibilities. Then, try to translate it into Portuguese.</p>
-            <p>
-                Historians often wonder about turning points in history. For example, if the library of Alexandria <span class="example-word">hadn't been destroyed</span>, humanity <span class="example-word">would have preserved</span> centuries of ancient knowledge. We <span class="example-word">might have achieved</span> certain scientific advancements much earlier. If ancient scholars <span class="example-word">had saved</span> more of those scrolls, modern science <span class="example-word">could have had</span> a different foundation. The world <span class="example-word">would have been</span> a profoundly different place.
-                <br><br>
-                Think about a more personal decision. I once had an opportunity to work abroad. If I <span class="example-word">had taken</span> that job, I <span class="example-word">would have lived</span> in Japan for five years. I <span class="example-word">would have learned</span> a new language and experienced a completely different culture. I didn't take it because I was afraid. If I <span class="example-word">had been</span> more courageous, I <span class="example-word">wouldn't have</span> this regret now.
-                <br><br>
-                My friend, on the other hand, took a big risk. He invested in a small startup. If he <span class="example-word">hadn't invested</span> that money, he <span class="example-word">would have bought</span> a safe, normal house. But because he did, he is now the CEO of a successful company. His life <span class="example-word">wouldn't have changed</span> so dramatically if he <span class="example-word">had chosen</span> the safer path.
-                <br><br>
-                These are the types of reflections that the Third Conditional allows. It's a way to explore the paths not taken. What <span class="example-word">would have happened</span> if you <span class="example-word">had made</span> a different choice at a crucial moment in your life? It’s a powerful question. If we <span class="example-word">hadn't made</span> our past mistakes, maybe we <span class="example-word">wouldn't have learned</span> the valuable lessons that define who we are today.
-            </p>
-            <hr>
-            <h4>Quiz</h4>
-            <p>According to the text, what might have happened if the library of Alexandria had not been destroyed?</p>
-            <ol class="quiz-options">
-                <li>Nothing would have changed.</li>
-                <li>Ancient scholars would have written more books.</li>
-                <li>We might have made scientific advancements much earlier.</li>
-                <li>People would have stopped reading.</li>
-                <li>My friend would not have invested in a startup.</li>
-            </ol>
-            <details class="gabarito">
-                <summary>Ver Resposta do Quiz</summary>
-                <div class="gabarito-content">
-                    Resposta Correta: <strong>c) We might have made scientific advancements much earlier.</strong>
+        <!-- ==================== SEÇÃO 28.3: VOCABULÁRIO (30 CARDS) ==================== -->
+        <section id="sec-28-3">
+            <h3>28.3 Vocabulário da Aula: Arrependimentos e Oportunidades (30 Termos) <span class="emoji-small">📚🔊</span></h3>
+            <p>Palavras de nível intermediário-avançado para refletir sobre o passado que poderia ter sido. Toque no botão azul <strong>🔊</strong> para ouvir cada termo:</p>
+
+            <div class="search-box">
+                <input type="text" id="vocabSearch" class="search-input" placeholder="🔍 Filtrar vocabulário (ex: regret, hindsight, turning point, outcome, arrependimento, escolha)..." onkeyup="filterVocab()">
+            </div>
+
+            <div id="vocabGrid" class="vocab-grid"></div>
+
+            <div class="obs-box empty-note" data-obs-wrapper="obs_28_3">
+                <div class="obs-header">
+                    <label class="obs-title" for="obs_28_3">📝 Minhas Observações – Seção 28.3 (Vocabulário da Aula)</label>
+                    <span class="obs-save-badge" id="badge_obs_28_3">✓ Salvo no navegador</span>
                 </div>
-            </details>
+                <textarea id="obs_28_3" class="obs-textarea" data-section-name="28.3 Vocabulário" placeholder="Anote as palavras novas (como hindsight, foresight, turning point) e frases com elas..."></textarea>
+                <div class="obs-print-mirror" id="mirror_obs_28_3"></div>
+            </div>
         </section>
 
-        <section id="exercicios-finais">
-            <h3>Exercícios Práticos Finais 📝</h3>
+        <!-- ==================== SEÇÃO 28.4: TAREFA EXTRA + QUIZ INTERATIVO ==================== -->
+        <section id="sec-28-4" class="extra-task">
+            <h3 style="margin-top:0; border-left-color: var(--purple); color: #6c3483;">28.4 Tarefa Extra: Leitura, Áudio e Quiz Interativo <span class="emoji-small">✍️🎧</span></h3>
+            <p>Leia e escute o texto abaixo sobre cenários históricos e decisões pessoais de "e se...". Preste atenção no uso do <strong>Third Conditional</strong> para explorar possibilidades passadas e tente traduzir o texto na sua caixa de observações!</p>
+
+            <div class="story-card">
+                <div class="story-header">
+                    <strong style="color: #6c3483;">📖 Story: Turning Points & Paths Not Taken</strong>
+                    <button id="storyAudioBtn" class="audio-btn-pill" onclick="toggleStoryAudio()">🔊 Ouvir História Completa</button>
+                </div>
+                <p>Historians often wonder about turning points in history. For example, if the library of Alexandria <span class="example-word">hadn't been destroyed</span>, humanity <span class="example-word">would have preserved</span> centuries of ancient knowledge. We <span class="example-word">might have achieved</span> certain scientific advancements much earlier. If ancient scholars <span class="example-word">had saved</span> more of those scrolls, modern science <span class="example-word">could have had</span> a different foundation. The world <span class="example-word">would have been</span> a profoundly different place.</p>
+                <p>Think about a more personal decision. I once had an opportunity to work abroad. If I <span class="example-word">had taken</span> that job, I <span class="example-word">would have lived</span> in Japan for five years. I <span class="example-word">would have learned</span> a new language and experienced a completely different culture. I didn't take it because I was afraid. If I <span class="example-word">had been</span> more courageous, I <span class="example-word">wouldn't have</span> this regret now.</p>
+                <p>My friend, on the other hand, took a big risk. He invested in a small startup. If he <span class="example-word">hadn't invested</span> that money, he <span class="example-word">would have bought</span> a safe, normal house. But because he did, he is now the CEO of a successful company. His life <span class="example-word">wouldn't have changed</span> so dramatically if he <span class="example-word">had chosen</span> the safer path.</p>
+                <p style="margin-bottom:0;">These are the types of reflections that the Third Conditional allows. It's a way to explore the paths not taken. What <span class="example-word">would have happened</span> if you <span class="example-word">had made</span> a different choice at a crucial moment in your life? It’s a powerful question. If we <span class="example-word">hadn't made</span> our past mistakes, maybe we <span class="example-word">wouldn't have learned</span> the valuable lessons that define who we are today.</p>
+            </div>
+
+            <div class="quiz-container">
+                <div class="quiz-question">
+                    <p><strong>Quiz 1 (Compreensão do Texto):</strong> According to the text, what might have happened if the library of Alexandria had not been destroyed?</p>
+                    <button class="quiz-btn" onclick="checkQuiz(this, false, 'q1', 'Incorreto! O texto diz que o mundo teria sido um lugar profundamente diferente.')">a) Nothing would have changed.</button>
+                    <button class="quiz-btn" onclick="checkQuiz(this, false, 'q1', 'Incorreto! O texto fala sobre salvar os pergaminhos antigos (scrolls), não sobre escrever mais livros.')">b) Ancient scholars would have written more books.</button>
+                    <button class="quiz-btn" onclick="checkQuiz(this, true, 'q1', 'Perfeito! O primeiro parágrafo afirma: &ldquo;We might have achieved certain scientific advancements much earlier.&rdquo; (Poderíamos ter alcançado avanços científicos muito mais cedo).')">c) We might have made scientific advancements much earlier.</button>
+                    <button class="quiz-btn" onclick="checkQuiz(this, false, 'q1', 'Incorreto! O texto diz que séculos de conhecimento antigo teriam sido preservados.')">d) People would have stopped reading.</button>
+                    <button class="quiz-btn" onclick="checkQuiz(this, false, 'q1', 'Incorreto! O amigo que investiu na startup é outro exemplo do terceiro parágrafo.')">e) My friend would not have invested in a startup.</button>
+                    <div id="feedback-q1" class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question">
+                    <p><strong>Quiz 2 (Gramática na Prática):</strong> Qual alternativa forma <strong>CORRETAMENTE</strong> o Third Conditional (hipótese no passado)?</p>
+                    <button class="quiz-btn" onclick="checkQuiz(this, false, 'q2', 'Atenção! Na parte com &ldquo;If&rdquo;, usamos sempre &ldquo;had + V3&rdquo; (nunca &ldquo;would have&rdquo;).')">a) If I would have known, I had told you.</button>
+                    <button class="quiz-btn" onclick="checkQuiz(this, false, 'q2', 'Incorreto! Essa frase está no Second Conditional (hipótese no presente/futuro), não no passado.')">b) If I knew, I would tell you.</button>
+                    <button class="quiz-btn" onclick="checkQuiz(this, true, 'q2', 'Excelente! A estrutura exata do Third Conditional é: If + Past Perfect (had known), ... would have + Particípio Passado (would have told).')">c) If I had known, I would have told you.</button>
+                    <div id="feedback-q2" class="quiz-feedback"></div>
+                </div>
+            </div>
+
+            <div class="obs-box empty-note" data-obs-wrapper="obs_28_4" style="margin-bottom:0;">
+                <div class="obs-header">
+                    <label class="obs-title" for="obs_28_4">📝 Minhas Observações – Seção 28.4 (Tradução do Texto e Anotações)</label>
+                    <span class="obs-save-badge" id="badge_obs_28_4">✓ Salvo no navegador</span>
+                </div>
+                <textarea id="obs_28_4" class="obs-textarea" data-section-name="28.4 Tarefa Extra (Tradução)" placeholder="Escreva aqui sua tradução do texto ou anote reflexões pessoais sobre decisões passadas..."></textarea>
+                <div class="obs-print-mirror" id="mirror_obs_28_4"></div>
+            </div>
+        </section>
+
+        <!-- ==================== SEÇÃO 28.5: EXERCÍCIOS PRÁTICOS FINAIS ==================== -->
+        <section id="sec-28-5">
+            <h3>28.5 Exercícios Práticos Finais (Editáveis e Salvos Automaticamente) <span class="emoji-small">📝</span></h3>
             <div class="secao-exercicios">
-                <h4>Parte 1: Complete as Frases Condicionais</h4>
-                <p>Use a forma correta dos verbos entre parênteses para formar frases no Third Conditional.</p>
-                <ol class="exercise-list">
-                    <li>If I <span class="fill-in-blank"></span> (know) you were coming, I <span class="fill-in-blank"></span> (bake) a cake.</li>
-                    <li>She <span class="fill-in-blank"></span> (not / miss) the train if she <span class="fill-in-blank"></span> (leave) earlier.</li>
-                    <li>What <span class="fill-in-blank"></span> (you / do) if you <span class="fill-in-blank"></span> (see) the accident?</li>
+                <h4 style="margin-top:0;">Parte 1: Complete as Frases Condicionais</h4>
+                <p>Use a forma correta dos verbos entre parênteses para formar frases no Third Conditional:</p>
+                <ol>
+                    <li>If I <input type="text" id="ex28_1_1a" class="exercise-input" placeholder="know"> (know) you were coming, I <input type="text" id="ex28_1_1b" class="exercise-input" placeholder="bake"> (bake) a cake.</li>
+                    <li>She <input type="text" id="ex28_1_2a" class="exercise-input" placeholder="not / miss"> (not / miss) the train if she <input type="text" id="ex28_1_2b" class="exercise-input" placeholder="leave"> (leave) earlier.</li>
+                    <li>What <input type="text" id="ex28_1_3a" class="exercise-input" placeholder="you / do"> (you / do) if you <input type="text" id="ex28_1_3b" class="exercise-input" placeholder="see"> (see) the accident?</li>
                 </ol>
+
                 <h4>Parte 2: Crie uma Frase de Arrependimento</h4>
-                <p>Pense em algo que você fez (ou não fez) no passado e que se arrepende um pouco. Escreva uma frase no Third Conditional sobre isso.</p>
-                <p>→ <span class="fill-in-blank" style="width: 100%;"></span>.</p>
+                <p>Pense em algo que você fez (ou não fez) no passado e que se arrepende um pouco. Escreva uma frase no Third Conditional sobre isso:</p>
+                <p>→ <input type="text" id="ex28_2_1" class="exercise-input wide" placeholder="If I had..., I would have..."></p>
+
+                <details class="gabarito">
+                    <summary>📖 Ver Gabarito dos Exercícios com Áudio 🔊</summary>
+                    <div class="gabarito-content">
+                        <p><strong>Respostas da Parte 1:</strong></p>
+                        <p>1. If I <strong>had known</strong> you were coming, I <strong>would have baked / 'd have baked</strong> a cake. <button class="audio-btn-inline" onclick="playAudio('If I had known you were coming, I would have baked a cake.')">🔊</button></p>
+                        <p>2. She <strong>wouldn't have missed</strong> the train if she <strong>had left</strong> earlier. <button class="audio-btn-inline" onclick="playAudio('She wouldn\'t have missed the train if she had left earlier.')">🔊</button></p>
+                        <p>3. What <strong>would you have done</strong> if you <strong>had seen</strong> the accident? <button class="audio-btn-inline" onclick="playAudio('What would you have done if you had seen the accident?')">🔊</button></p>
+                        <hr style="border:0; border-top:1px solid #e2e8f0; margin:12px 0;">
+                        <p><strong>Resposta da Parte 2 (Exemplo):</strong></p>
+                        <p>• If I had saved more money last year, I would have traveled to Europe. <button class="audio-btn-inline" onclick="playAudio('If I had saved more money last year, I would have traveled to Europe.')">🔊</button></p>
+                    </div>
+                </details>
             </div>
-            <details class="gabarito">
-                <summary>Ver Gabarito dos Exercícios</summary>
-                <div class="gabarito-content">
-                    <p><strong>Parte 1:</strong> 1. had known / would have baked, 2. wouldn't have missed / had left, 3. would you have done / had seen.</p>
-                    <p><strong>Parte 2 (Exemplo):</strong> If I had saved more money last year, I would have traveled to Europe.</p>
+
+            <div class="obs-box empty-note" data-obs-wrapper="obs_28_5">
+                <div class="obs-header">
+                    <label class="obs-title" for="obs_28_5">📝 Minhas Observações – Seção 28.5 (Exercícios Práticos)</label>
+                    <span class="obs-save-badge" id="badge_obs_28_5">✓ Salvo no navegador</span>
                 </div>
-            </details>
+                <textarea id="obs_28_5" class="obs-textarea" data-section-name="28.5 Exercícios Práticos" placeholder="Anote seu resultado nos exercícios ou crie mais frases com o Third Conditional..."></textarea>
+                <div class="obs-print-mirror" id="mirror_obs_28_5"></div>
+            </div>
         </section>
 
+        <!-- ==================== CONCLUSÃO ==================== -->
         <section id="conclusao">
-            <h3>Conclusão 🥳</h3>
-            <p>Excelente trabalho na Aula 28! Você agora sabe como usar o Third Conditional para falar sobre situações hipotéticas no passado, expressar arrependimentos e refletir sobre como as coisas poderiam ter sido diferentes. Esta é uma estrutura complexa, mas muito útil para narrativas e discussões profundas.</p>
-            <p>Continue praticando para se sentir cada vez mais confortável com o Past Perfect e "would have + Particípio Passado".</p>
-            <p>Na próxima aula, vamos explorar a Voz Passiva para mudar o foco de nossas frases. Até lá!</p>
+            <h3>Conclusão da Aula 28 <span class="emoji-small">🥳</span></h3>
+            <div class="nota-dica">
+                <p><strong>Excelente trabalho na Aula 28!</strong> Você agora sabe como usar o <strong>Third Conditional</strong> para falar sobre situações hipotéticas no passado, expressar arrependimentos e refletir sobre como as coisas poderiam ter sido diferentes. Esta é uma estrutura complexa, mas muito útil para narrativas e discussões profundas.</p>
+                <p>Continue praticando para se sentir cada vez mais confortável com o Past Perfect e <strong>"would have + Particípio Passado"</strong>.</p>
+                <p style="margin-bottom:0;">Na <strong>próxima aula (Aula 29)</strong>, vamos explorar a <strong>Voz Passiva (Passive Voice)</strong> para mudar o foco de nossas frases. Até lá!</p>
+            </div>
+
+            <div class="obs-box empty-note" data-obs-wrapper="obs_final">
+                <div class="obs-header">
+                    <label class="obs-title" for="obs_final">📝 Observações Gerais e Resumo Pessoal da Aula 28</label>
+                    <span class="obs-save-badge" id="badge_obs_final">✓ Salvo no navegador</span>
+                </div>
+                <textarea id="obs_final" class="obs-textarea" data-section-name="Resumo Geral da Aula 28" placeholder="Espaço livre para seu resumo final da Aula 28, metas de revisão ou anotações pessoais..."></textarea>
+                <div class="obs-print-mirror" id="mirror_obs_final"></div>
+            </div>
         </section>
 
-        <!-- Botão Navegação Rodapé -->
-        <button class="nav-btn" onclick="alert('Voltar ao Menu Principal')">⬅ Voltar ao Menu</button>
+        <!-- BOTÕES INFERIORES: MENU PRINCIPAL + PDF -->
+        <div class="top-actions" style="margin-top: 26px;">
+            <button class="nav-btn" onclick="location.href='https://espaco-liberdade.github.io/inglesipa/'">← Voltar ao Menu Principal</button>
+            <button class="pdf-btn" onclick="printWithNotes()">📄 Salvar como PDF (A4) com Marcações</button>
+        </div>
     </div>
 
-    <!-- SCRIPT DE ÁUDIO OTIMIZADO -->
     <script>
+        // =========================================================================
+        // 1. DADOS COMPLETOS DA AULA 28 (TODAS AS 31 FRASES + TODOS OS 30 TERMOS)
+        // =========================================================================
+        const practiceSentences = [
+            ["If I<b>'d known</b> about the traffic, I<b>'d have left</b> earlier.", "/ɪf aɪd noʊn əˈbaʊt ðə ˈtræfɪk aɪd həv left ˈɜːrliər/", "(ÊF áid NÔUN ã-BÁUT dhã TRÉ-fêk, áid rãv LÉFT ÃR-li-ãr)", "Se eu soubesse do trânsito, eu teria saído mais cedo.", "If I had known about the traffic, I would have left earlier."],
+            ["She <b>would've called</b> you if her phone <b>hadn't died</b>.", "/ʃiː ˈwʊdəv kɔːld juː ɪf hər foʊn ˈhædnt daɪd/", "(XÍI UÚ-dãv CÓLD iúu êf rãr FÔUN RÉ-dãnt DÁID)", "Ela teria te ligado se o telefone dela não tivesse descarregado.", "She would have called you if her phone hadn't died."],
+            ["If we<b>'d saved</b> more money, we <b>could've bought</b> a new car.", "/ɪf wiːd seɪvd mɔːr ˈmʌni wiː ˈkʊdəv bɔːt ə nuː kɑːr/", "(ÊF uíid SÊIVD MÓR MÂ-ni, uíi CÚ-dãv BÓT ã NÚU CÁR)", "Se tivéssemos economizado mais dinheiro, poderíamos ter comprado um carro novo.", "If we had saved more money, we could have bought a new car."],
+            ["They <b>might've won</b> if the star player <b>hadn't been</b> injured.", "/ðeɪ ˈmaɪtəv wʌn ɪf ðə stɑːr ˈpleɪər ˈhædnt bɪn ˈɪndʒərd/", "(DHÊI MÁI-rãv UÂN êf dhã STÁR PLÊI-ãr RÉ-dãnt bên ÊN-djãrd)", "Eles talvez tivessem ganhado o jogo se o jogador estrela não estivesse machucado.", "They might have won if the star player hadn't been injured."],
+            ["If he<b>'d taken</b> that job, his life <b>would've been</b> very different.", "/ɪf hiːd ˈteɪkən ðæt dʒɑːb hɪz laɪf ˈwʊdəv bɪn ˈveri ˈdɪfrənt/", "(ÊF ríid TÊI-cãn DHÉT DJÓB, rêz LÁIF UÚ-dãv bên VÉ-ri DÊ-frãnt)", "Se ele tivesse aceitado aquele emprego, a vida dele teria sido muito diferente.", "If he had taken that job, his life would have been very different."],
+            ["I <b>would've gone</b> to the party if I<b>'d known</b> you were going.", "/aɪ ˈwʊdəv ɡɔːn tə ðə ˈpɑːrti ɪf aɪd noʊn juː wɜːr ˈɡoʊɪŋ/", "(ÁI UÚ-dãv GÓN tã dhã PÁR-ti êf áid NÔUN iúu uãr GÔU-in)", "Eu teria ido à festa se soubesse que você ia.", "I would have gone to the party if I had known you were going."],
+            ["If she <b>hadn't missed</b> the bus, she <b>wouldn't have been</b> late for work.", "/ɪf ʃiː ˈhædnt mɪst ðə bʌs ʃiː ˈwʊdnt həv bɪn leɪt fər wɜːrk/", "(ÊF xíi RÉ-dãnt MÊST dhã BÂS, xíi UÚ-dãnt rãv bên LÊIT fór UÃRK)", "Se ela não tivesse perdido o ônibus, ela não teria se atrasado para o trabalho.", "If she hadn't missed the bus, she wouldn't have been late for work."],
+            ["We <b>could've helped</b> if we<b>'d known</b> you needed assistance.", "/wiː ˈkʊdəv helpt ɪf wiːd noʊn juː ˈniːdɪd əˈsɪstəns/", "(UÍI CÚ-dãv RÉLPT êf uíid NÔUN iúu NÍI-dêd ã-SÊS-tãns)", "Nós poderíamos ter ajudado se soubéssemos que você precisava de assistência.", "We could have helped if we had known you needed assistance."],
+            ["If they<b>'d studied</b> more, they<b>'d have understood</b> the lesson.", "/ɪf ðeɪd ˈstʌdid mɔːr ðeɪd həv ˌʌndərˈstʊd ðə ˈlesn/", "(ÊF dhêid STÂ-did MÓR, dhêid rãv ân-dãr-STÚD dhã LÉ-sãn)", "Se eles tivessem estudado mais, eles teriam entendido a lição.", "If they had studied more, they would have understood the lesson."],
+            ["He <b>would've bought</b> the house if he<b>'d had</b> enough money.", "/hiː ˈwʊdəv bɔːt ðə haʊs ɪf hiːd hæd ɪˈnʌf ˈmʌni/", "(RÍI UÚ-dãv BÓT dhã RÁUS êf ríid RÉD i-NÂF MÂ-ni)", "Ele teria comprado a casa se tivesse tido dinheiro suficiente.", "He would have bought the house if he had had enough money."],
+            ["If I <b>hadn't been</b> so tired, I <b>would've gone</b> out.", "/ɪf aɪ ˈhædnt bɪn soʊ ˈtaɪərd aɪ ˈwʊdəv ɡɔːn aʊt/", "(ÊF ái RÉ-dãnt bên sôu TÁI-ãrd, ái UÚ-dãv GÓN ÁUT)", "Se eu não estivesse tão cansado, eu teria saído.", "If I hadn't been so tired, I would have gone out."],
+            ["She <b>would've finished</b> the race if she <b>hadn't fallen</b>.", "/ʃiː ˈwʊdəv ˈfɪnɪʃt ðə reɪs ɪf ʃiː ˈhædnt ˈfɔːlən/", "(XÍI UÚ-dãv FÊ-nêsht dhã RÊIS êf xíi RÉ-dãnt FÓ-lãn)", "Ela teria terminado a corrida se não tivesse caído.", "She would have finished the race if she hadn't fallen."],
+            ["If we<b>'d booked</b> earlier, we <b>could've gotten</b> cheaper tickets.", "/ɪf wiːd bʊkt ˈɜːrliər wiː ˈkʊdəv ˈɡɑːtn ˈtʃiːpər ˈtɪkɪts/", "(ÊF uíid BÚKT ÃR-li-ãr, uíi CÚ-dãv GÓ-tãn TCHÍI-pãr TÊ-kêts)", "Se tivéssemos reservado mais cedo, poderíamos ter conseguido ingressos mais baratos.", "If we had booked earlier, we could have gotten cheaper tickets."],
+            ["They <b>wouldn't have been</b> surprised if they<b>'d known</b> the plan.", "/ðeɪ ˈwʊdnt həv bɪn sərˈpraɪzd ɪf ðeɪd noʊn ðə plæn/", "(DHÊI UÚ-dãnt rãv bên sãr-PRÁIZD êf dhêid NÔUN dhã PLÉN)", "Eles não teriam ficado surpresos se soubessem do plano.", "They wouldn't have been surprised if they had known the plan."],
+            ["If you<b>'d told</b> me, I<b>'d have helped</b> you move.", "/ɪf juːd toʊld miː aɪd həv helpt juː muːv/", "(ÊF iúud TÔULD míi, áid rãv RÉLPT iúu MÚUV)", "Se você tivesse me contado, eu teria te ajudado a se mudar.", "If you had told me, I would have helped you move."],
+            ["He <b>might've passed</b> the interview if he<b>'d prepared</b> more.", "/hiː ˈmaɪtəv pæst ði ˈɪntərvjuː ɪf hiːd prɪˈperd mɔːr/", "(RÍI MÁI-rãv PÉST dhí ÊN-tãr-viúu êf ríid pri-PÉRD MÓR)", "Ele talvez tivesse passado na entrevista se tivesse se preparado mais.", "He might have passed the interview if he had prepared more."],
+            ["If the alarm <b>hadn't gone off</b>, I <b>would've overslept</b>.", "/ɪf ði əˈlɑːrm ˈhædnt ɡɔːn ɔːf aɪ ˈwʊdəv ˌoʊvərˈslept/", "(ÊF dhí ã-LÁRM RÉ-dãnt GÓN ÓF, ái UÚ-dãv ôu-vãr-SLÉPT)", "Se o alarme não tivesse tocado, eu teria dormido demais.", "If the alarm hadn't gone off, I would have overslept."],
+            ["She <b>would've bought</b> the dress if it <b>had been</b> on sale.", "/ʃiː ˈwʊdəv bɔːt ðə dres ɪf ɪt hæd bɪn ɑːn seɪl/", "(XÍI UÚ-dãv BÓT dhã DRÉS êf êt réd bên ón SÊI-õl)", "Ela teria comprado o vestido se estivesse em promoção.", "She would have bought the dress if it had been on sale."],
+            ["If we <b>hadn't forgotten</b> the map, we <b>wouldn't have needed</b> to ask for directions.", "/ɪf wiː ˈhædnt fərˈɡɑːtn ðə mæp wiː ˈwʊdnt həv ˈniːdɪd tə æsk fər dəˈrekʃnz/", "(ÊF uíi RÉ-dãnt fór-GÓ-tãn dhã MÉP, uíi UÚ-dãnt rãv NÍI-dêd tã ÉSK fór dã-RÉK-shãnz)", "Se não tivéssemos esquecido o mapa, não teríamos precisado pedir direções.", "If we hadn't forgotten the map, we wouldn't have needed to ask for directions."],
+            ["They <b>could've seen</b> the show if they<b>'d arrived</b> earlier.", "/ðeɪ ˈkʊdəv siːn ðə ʃoʊ ɪf ðeɪd əˈraɪvd ˈɜːrliər/", "(DHÊI CÚ-dãv SÍIN dhã XÔU êf dhêid ã-RÁIVD ÃR-li-ãr)", "Eles poderiam ter visto o show se tivessem chegado mais cedo.", "They could have seen the show if they had arrived earlier."],
+            ["If I<b>'d listened</b> to your advice, I <b>wouldn't have made</b> that mistake.", "/ɪf aɪd ˈlɪsnd tə jɔːr ædˈvaɪs aɪ ˈwʊdnt həv meɪd ðæt mɪˈsteɪk/", "(ÊF áid LÊ-sãnd tã iór éd-VÁIS, ái UÚ-dãnt rãv MÊID DHÉT mĩ-STÊIK)", "Se eu tivesse ouvido seu conselho, não teria cometido aquele erro.", "If I had listened to your advice, I wouldn't have made that mistake."],
+            ["The company <b>might've succeeded</b> if it <b>had had</b> better marketing.", "/ðə ˈkʌmpəni ˈmaɪtəv səkˈsiːdɪd ɪf ɪt hæd hæd ˈbetər ˈmɑːrkətɪŋ/", "(dhã CÂM-pã-ni MÁI-rãv sãk-SÍI-dêd êf êt réd RÉD BÉ-tãr MÁR-kê-tin)", "A empresa talvez tivesse tido sucesso se tivesse tido um marketing melhor.", "The company might have succeeded if it had had better marketing."],
+            ["If you <b>hadn't helped</b> me, I <b>would have been</b> in big trouble.", "/ɪf juː ˈhædnt helpt miː aɪ wəd həv bɪn ɪn bɪɡ ˈtrʌbl/", "(ÊF iúu RÉ-dãnt RÉLPT míi, ái uãd rãv bên în BÊG TRÂ-bõl)", "Se você não tivesse me ajudado, eu estaria (teria estado) em grandes apuros.", "If you hadn't helped me, I would have been in big trouble."],
+            ["He <b>would've felt</b> better if he <b>had rested</b> more.", "/hiː ˈwʊdəv felt ˈbetər ɪf hiː hæd ˈrestɪd mɔːr/", "(RÍI UÚ-dãv FÉLT BÉ-tãr êf ríi réd RÉS-têd MÓR)", "Ele teria se sentido melhor se tivesse descansado mais.", "He would have felt better if he had rested more."],
+            ["If I <b>had found</b> my keys, I <b>could've opened</b> the door.", "/ɪf aɪ hæd faʊnd maɪ kiːz aɪ ˈkʊdəv ˈoʊpənd ðə dɔːr/", "(ÊF ái réd FÁUND mái KÍIZ, ái CÚ-dãv ÔU-pãnd dhã DÓR)", "Se eu tivesse encontrado minhas chaves, eu poderia ter aberto a porta.", "If I had found my keys, I could have opened the door."],
+            ["What <b>would have happened</b> if the internet <b>hadn't been</b> invented?", "/wʌt wəd həv ˈhæpənd ɪf ði ˈɪntərnet ˈhædnt bɪn ɪnˈventɪd/", "(UÓT uãd rãv RÉ-pãnd êf dhí ÊN-tãr-nét RÉ-dãnt bên în-VÉN-têd?)", "O que teria acontecido se a internet não tivesse sido inventada?", "What would have happened if the internet hadn't been invented?"],
+            ["If you <b>had been</b> there, you <b>would have loved</b> the concert.", "/ɪf juː hæd bɪn ðer juː wəd həv lʌvd ðə ˈkɑːnsərt/", "(ÊF iúu réd BÊN dhér, iúu uãd rãv LÂVD dhã CÓN-sãrt)", "Se você estivesse lá, você teria amado o show.", "If you had been there, you would have loved the concert."],
+            ["The project <b>would have been</b> a success if they <b>had collaborated</b> better.", "/ðə ˈprɑːdʒekt wəd həv bɪn ə səkˈses ɪf ðeɪ hæd kəˈlæbəreɪtɪd ˈbetər/", "(dhã PRÓ-djekt uãd rãv bên ã sãk-SÉS êf dhêi réd cõ-LÉ-bõ-rei-têd BÉ-tãr)", "O projeto teria sido um sucesso se eles tivessem colaborado melhor.", "The project would have been a success if they had collaborated better."],
+            ["If I <b>hadn't spent</b> all my money, I <b>could have bought</b> that souvenir.", "/ɪf aɪ ˈhædnt spent ɔːl maɪ ˈmʌni aɪ kəd həv bɔːt ðæt ˌsuːvəˈnɪr/", "(ÊF ái RÉ-dãnt SPÉNT ól mái MÂ-ni, ái cãd rãv BÓT DHÉT súu-vã-NÍIR)", "Se eu não tivesse gastado todo o meu dinheiro, poderia ter comprado aquela lembrancinha.", "If I hadn't spent all my money, I could have bought that souvenir."],
+            ["She <b>might have understood</b> if you <b>had explained</b> the situation in French.", "/ʃiː maɪt həv ˌʌndərˈstʊd ɪf juː hæd ɪkˈspleɪnd ðə ˌsɪtʃuˈeɪʃn ɪn frentʃ/", "(XÍI MÁIT rãv ân-dãr-STÚD êf iúu réd ek-SPLÊIND dhã sê-tchu-ÊI-shãn în FRÉNTCH)", "Ela talvez tivesse entendido se você tivesse explicado a situação em francês.", "She might have understood if you had explained the situation in French."],
+            ["If the team <b>had practiced</b> more, they <b>wouldn't have lost</b> the final match.", "/ɪf ðə tiːm hæd ˈpræktɪst mɔːr ðeɪ ˈwʊdnt həv lɔːst ðə ˈfaɪnl mætʃ/", "(ÊF dhã TÍIM réd PRÉK-têst MÓR, dhêi UÚ-dãnt rãv LÓST dhã FÁI-nõl MÉTCH)", "Se o time tivesse treinado mais, eles não teriam perdido a partida final.", "If the team had practiced more, they wouldn't have lost the final match."]
+        ];
+
+        const vocabWords = [
+            ["Regret", "/rɪˈɡret/", "(ri-GRÉT)", "Arrependimento"],
+            ["Opportunity", "/ˌɑːpərˈtuːnəti/", "(ó-pãr-TÚU-nã-ti)", "Oportunidade"],
+            ["Decision", "/dɪˈsɪʒn/", "(dĩ-SÊ-jãn)", "Decisão"],
+            ["Consequence", "/ˈkɑːnsəkwens/", "(CÓN-sã-cuens)", "Consequência"],
+            ["Mistake", "/mɪˈsteɪk/", "(mĩ-STÊIK)", "Erro / Engano"],
+            ["Outcome", "/ˈaʊtkʌm/", "(ÁUT-câm)", "Resultado"],
+            ["Reflect", "/rɪˈflekt/", "(ri-FLÉKT)", "Refletir"],
+            ["Imagine", "/ɪˈmædʒɪn/", "(i-MÉ-djĩn)", "Imaginar"],
+            ["Differently", "/ˈdɪfrəntli/", "(DÊ-frãnt-li)", "Diferentemente"],
+            ["Alternatively", "/ɔːlˈtɜːrnətɪvli/", "(ól-TÃR-nã-têv-li)", "Alternativamente"],
+            ["Avoid", "/əˈvɔɪd/", "(ã-VÓID)", "Evitar"],
+            ["Prevent", "/prɪˈvent/", "(pri-VÉNT)", "Prevenir"],
+            ["Succeed", "/səkˈsiːd/", "(sãk-SÍID)", "Ter sucesso"],
+            ["Fail", "/feɪl/", "(FÊI-õl)", "Falhar / Reprovar"],
+            ["Achieve", "/əˈtʃiːv/", "(ã-TCHÍIV)", "Alcançar"],
+            ["Miss (an opportunity)", "/mɪs/", "(MÊS)", "Perder (uma chance)", "Miss an opportunity"],
+            ["Correct", "/kəˈrekt/", "(cõ-RÉKT)", "Corrigir"],
+            ["Alter", "/ˈɔːltər/", "(ÓL-tãr)", "Alterar"],
+            ["Reconsider", "/ˌriːkənˈsɪdər/", "(ríi-cãn-SÊ-dãr)", "Reconsiderar"],
+            ["Lament", "/ləˈment/", "(lã-MÉNT)", "Lamentar"],
+            ["Turning point", "/ˈtɜːrnɪŋ pɔɪnt/", "(TÃR-nin PÓINT)", "Ponto de virada"],
+            ["Crucial moment", "/ˈkruːʃl ˈmoʊmənt/", "(CRÚU-shõl MÔU-mãnt)", "Momento crucial"],
+            ["Hindsight", "/ˈhaɪndsaɪt/", "(RÁIND-sait)", "Retrospectiva"],
+            ["Foresight", "/ˈfɔːrsaɪt/", "(FÓR-sait)", "Previsão"],
+            ["Unforgettable", "/ˌʌnfərˈɡetəbl/", "(ân-fór-GUÉ-tã-bõl)", "Inesquecível"],
+            ["Impactful", "/ˈɪmpæktfl/", "(ÊM-pékt-fõl)", "Impactante"],
+            ["Choice", "/tʃɔɪs/", "(TCHÓIS)", "Escolha"],
+            ["Path / Route", "/pæθ/ · /ruːt/", "(PÉTH / RÚUT)", "Caminho / Rota", "Path, route"],
+            ["Decisive", "/dɪˈsaɪsɪv/", "(dĩ-SÁI-sêv)", "Decisivo"],
+            ["Influential", "/ˌɪnfluˈenʃl/", "(în-flu-ÉN-shõl)", "Influente"]
+        ];
+
+        const fullStoryText = `Historians often wonder about turning points in history. For example, if the library of Alexandria hadn't been destroyed, humanity would have preserved centuries of ancient knowledge. We might have achieved certain scientific advancements much earlier. If ancient scholars had saved more of those scrolls, modern science could have had a different foundation. The world would have been a profoundly different place. Think about a more personal decision. I once had an opportunity to work abroad. If I had taken that job, I would have lived in Japan for five years. I would have learned a new language and experienced a completely different culture. I didn't take it because I was afraid. If I had been more courageous, I wouldn't have this regret now. My friend, on the other hand, took a big risk. He invested in a small startup. If he hadn't invested that money, he would have bought a safe, normal house. But because he did, he is now the CEO of a successful company. His life wouldn't have changed so dramatically if he had chosen the safer path. These are the types of reflections that the Third Conditional allows. It's a way to explore the paths not taken. What would have happened if you had made a different choice at a crucial moment in your life? It's a powerful question. If we hadn't made our past mistakes, maybe we wouldn't have learned the valuable lessons that define who we are today.`;
+
+        // =========================================================================
+        // 2. RENDERIZAÇÃO DAS 31 FRASES E DOS 30 CARDS DE VOCABULÁRIO
+        // =========================================================================
+        function renderSentencesTable() {
+            const tbody = document.getElementById('sentencesTableBody');
+            tbody.innerHTML = practiceSentences.map((item, idx) => {
+                const cleanText = item[0].replace(/<\/?b>/g, '');
+                const searchData = `${cleanText} ${item[3]}`.toLowerCase();
+                return `
+                <tr class="sentence-row" data-search="${searchData.replace(/"/g, '&quot;')}">
+                    <td>
+                        <span class="num-badge">#${idx + 1}</span>
+                        <span class="sentence-en">${item[0]}</span>
+                        <button class="audio-btn-inline" onclick="playSentenceAudio(${idx})" title="Ouvir frase #${idx + 1}">🔊</button>
+                    </td>
+                    <td>
+                        <span class="ipa-symbol">${item[1]}</span>
+                        <span class="character-portuguese-phonetics">${item[2]}</span>
+                        <span class="details-translation">${item[3]}</span>
+                    </td>
+                </tr>`;
+            }).join('');
+        }
+
+        function renderVocabGrid() {
+            const grid = document.getElementById('vocabGrid');
+            grid.innerHTML = vocabWords.map((v, idx) => {
+                const searchData = `${v[0]} ${v[3]}`.toLowerCase();
+                return `
+                <div class="vocab-item" data-search="${searchData.replace(/"/g, '&quot;')}">
+                    <div class="vocab-text">
+                        <span class="vocab-en">${v[0]}</span>
+                        <span class="vocab-ipa">${v[1]}</span>
+                        <span class="vocab-phon">${v[2]}</span>
+                        <span class="vocab-pt">${v[3]}</span>
+                    </div>
+                    <button class="audio-btn-round" onclick="playVocabAudio(${idx})" title="Ouvir ${v[0]}">🔊</button>
+                </div>`;
+            }).join('');
+        }
+
+        function filterSentences() {
+            const q = document.getElementById('sentenceSearch').value.toLowerCase();
+            document.querySelectorAll('.sentence-row').forEach(row => {
+                row.style.display = row.getAttribute('data-search').includes(q) ? '' : 'none';
+            });
+            syncSvgSize();
+        }
+
+        function filterVocab() {
+            const q = document.getElementById('vocabSearch').value.toLowerCase();
+            document.querySelectorAll('.vocab-item').forEach(card => {
+                card.style.display = card.getAttribute('data-search').includes(q) ? 'flex' : 'none';
+            });
+            syncSvgSize();
+        }
+
+        // =========================================================================
+        // 3. SISTEMA DE CANETA / MARCA-TEXTO VETORIAL (PAINT SOBRE O LIVRO)
+        // =========================================================================
+        const STORAGE_PREFIX = 'inglesipa_aula28_';
+        const DRAWINGS_KEY = 'drawings_v1';
+        const svgNS = 'http://www.w3.org/2000/svg';
+        const drawLayer = document.getElementById('drawLayer');
+        const lessonBook = document.getElementById('lessonBook');
+
+        let penDockOpen = false;
+        let currentTool = 'pen';
+        let currentColor = '#e11d48';
+        let currentPenSize = 4;
+        let strokesHidden = false;
+        let strokes = [];
+        let isDrawing = false;
+        let isErasing = false;
+        let activeStroke = null;
+        let activePathEl = null;
+
+        function syncSvgSize() {
+            if (!lessonBook || !drawLayer) return;
+            const w = lessonBook.clientWidth;
+            const h = lessonBook.scrollHeight;
+            drawLayer.setAttribute('width', w);
+            drawLayer.setAttribute('height', h);
+            drawLayer.style.height = h + 'px';
+        }
+
+        function buildSmoothPath(points) {
+            if (!points || points.length === 0) return '';
+            if (points.length === 1) {
+                const [x, y] = points[0];
+                return `M ${x} ${y} L ${x + 0.1} ${y + 0.1}`;
+            }
+            let d = `M ${points[0][0].toFixed(1)} ${points[0][1].toFixed(1)}`;
+            for (let i = 1; i < points.length - 1; i++) {
+                const midX = ((points[i][0] + points[i + 1][0]) / 2).toFixed(1);
+                const midY = ((points[i][1] + points[i + 1][1]) / 2).toFixed(1);
+                d += ` Q ${points[i][0].toFixed(1)} ${points[i][1].toFixed(1)}, ${midX} ${midY}`;
+            }
+            const last = points[points.length - 1];
+            d += ` L ${last[0].toFixed(1)} ${last[1].toFixed(1)}`;
+            return d;
+        }
+
+        function createPathElement(stroke) {
+            const path = document.createElementNS(svgNS, 'path');
+            path.setAttribute('d', buildSmoothPath(stroke.points));
+            path.setAttribute('fill', 'none');
+            path.setAttribute('stroke', stroke.color);
+            path.setAttribute('stroke-linecap', 'round');
+            path.setAttribute('stroke-linejoin', 'round');
+            path.setAttribute('data-stroke-id', stroke.id);
+
+            if (stroke.tool === 'highlighter') {
+                path.setAttribute('stroke-width', stroke.width * 4.5);
+                path.setAttribute('stroke-opacity', '0.38');
+                path.classList.add('stroke-highlighter');
+            } else {
+                path.setAttribute('stroke-width', stroke.width);
+                path.setAttribute('stroke-opacity', '0.92');
+            }
+            return path;
+        }
+
+        function renderAllStrokes() {
+            drawLayer.innerHTML = '';
+            strokes.forEach(s => {
+                drawLayer.appendChild(createPathElement(s));
+            });
+            updateNotesSummary();
+        }
+
+        function saveStrokes() {
+            try {
+                const compact = strokes.map(s => ({
+                    id: s.id,
+                    tool: s.tool,
+                    color: s.color,
+                    width: s.width,
+                    points: s.points.map(p => [Math.round(p[0] * 10) / 10, Math.round(p[1] * 10) / 10])
+                }));
+                window.localStorage.setItem(STORAGE_PREFIX + DRAWINGS_KEY, JSON.stringify(compact));
+            } catch (e) {
+                console.warn('Não foi possível salvar os desenhos no localStorage:', e);
+            }
+            updateNotesSummary();
+        }
+
+        function loadStrokes() {
+            try {
+                const raw = window.localStorage.getItem(STORAGE_PREFIX + DRAWINGS_KEY);
+                if (raw) {
+                    const parsed = JSON.parse(raw);
+                    if (Array.isArray(parsed)) {
+                        strokes = parsed;
+                        renderAllStrokes();
+                    }
+                }
+            } catch (e) {
+                strokes = [];
+            }
+        }
+
+        function getRelativePoint(e) {
+            const rect = lessonBook.getBoundingClientRect();
+            return [e.clientX - rect.left, e.clientY - rect.top];
+        }
+
+        function eraseAtPoint(x, y) {
+            const threshold = 16;
+            const beforeLen = strokes.length;
+            strokes = strokes.filter(stroke => {
+                const hitRadius = stroke.tool === 'highlighter' ? Math.max(threshold, stroke.width * 2.5) : threshold;
+                for (let i = 0; i < stroke.points.length; i++) {
+                    const dx = stroke.points[i][0] - x;
+                    const dy = stroke.points[i][1] - y;
+                    if (dx * dx + dy * dy <= hitRadius * hitRadius) {
+                        return false;
+                    }
+                }
+                return true;
+            });
+            if (strokes.length !== beforeLen) {
+                renderAllStrokes();
+                saveStrokes();
+            }
+        }
+
+        drawLayer.addEventListener('pointerdown', (e) => {
+            if (!penDockOpen) return;
+            if (strokesHidden) {
+                toggleDrawingsVisibility();
+            }
+            e.preventDefault();
+            try { drawLayer.setPointerCapture(e.pointerId); } catch (err) {}
+            const [x, y] = getRelativePoint(e);
+
+            if (currentTool === 'eraser') {
+                isErasing = true;
+                eraseAtPoint(x, y);
+                return;
+            }
+
+            isDrawing = true;
+            activeStroke = {
+                id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+                tool: currentTool,
+                color: currentColor,
+                width: currentPenSize,
+                points: [[x, y]]
+            };
+            activePathEl = createPathElement(activeStroke);
+            drawLayer.appendChild(activePathEl);
+        });
+
+        drawLayer.addEventListener('pointermove', (e) => {
+            if (!penDockOpen) return;
+            const [x, y] = getRelativePoint(e);
+
+            if (isErasing && currentTool === 'eraser') {
+                e.preventDefault();
+                eraseAtPoint(x, y);
+                return;
+            }
+
+            if (!isDrawing || !activeStroke || !activePathEl) return;
+            e.preventDefault();
+
+            const pts = activeStroke.points;
+            const prev = pts[pts.length - 1];
+            const distSq = (x - prev[0]) ** 2 + (y - prev[1]) ** 2;
+            if (distSq >= 9) {
+                pts.push([x, y]);
+                activePathEl.setAttribute('d', buildSmoothPath(pts));
+            }
+        });
+
+        function finishPointerAction() {
+            if (isErasing) {
+                isErasing = false;
+                return;
+            }
+            if (!isDrawing || !activeStroke) return;
+            isDrawing = false;
+            strokes.push(activeStroke);
+            activeStroke = null;
+            activePathEl = null;
+            saveStrokes();
+        }
+
+        drawLayer.addEventListener('pointerup', finishPointerAction);
+        drawLayer.addEventListener('pointercancel', finishPointerAction);
+
+        function openPenDock(initialTool) {
+            syncSvgSize();
+            penDockOpen = true;
+            document.getElementById('penDock').classList.add('open');
+            document.getElementById('penFab').classList.add('is-open');
+            setDrawTool(initialTool || 'pen');
+            if (initialTool === 'highlighter') {
+                const yellowSwatch = document.querySelector('.color-swatch[data-color="#facc15"]');
+                if (yellowSwatch) setDrawColor('#facc15', yellowSwatch);
+            }
+        }
+
+        function closePenDock() {
+            penDockOpen = false;
+            isDrawing = false;
+            isErasing = false;
+            drawLayer.classList.remove('active-pen', 'active-eraser');
+            document.getElementById('penDock').classList.remove('open');
+            document.getElementById('penFab').classList.remove('is-open');
+            hideClearDrawConfirm();
+        }
+
+        function setDrawTool(tool) {
+            currentTool = tool;
+            const penBtn = document.getElementById('toolPenBtn');
+            const hlBtn = document.getElementById('toolHighlightBtn');
+            const erBtn = document.getElementById('toolEraserBtn');
+            const banner = document.getElementById('penModeBanner');
+
+            penBtn.className = 'dock-btn';
+            hlBtn.className = 'dock-btn';
+            erBtn.className = 'dock-btn';
+            drawLayer.classList.remove('active-pen', 'active-eraser');
+
+            if (tool === 'pen') {
+                penBtn.classList.add('active');
+                drawLayer.classList.add('active-pen');
+                banner.textContent = '✏️ Modo Caneta ATIVO — Circule palavras ou desenhe sobre a aula (clique em "Voltar à Leitura" para rolar/clicar nos áudios).';
+            } else if (tool === 'highlighter') {
+                hlBtn.classList.add('active-hl');
+                drawLayer.classList.add('active-pen');
+                banner.textContent = '🖍️ Modo Marca-Texto ATIVO — Arraste sobre frases ou regras para destacar sem cobrir o texto!';
+            } else {
+                erBtn.classList.add('active-er');
+                drawLayer.classList.add('active-eraser');
+                banner.textContent = '🧹 Modo Borracha ATIVO — Clique ou arraste sobre qualquer traço colorido para apagá-lo.';
+            }
+        }
+
+        function setDrawColor(hex, btnEl) {
+            currentColor = hex;
+            document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
+            if (btnEl) btnEl.classList.add('selected');
+            if (currentTool === 'eraser') setDrawTool('pen');
+        }
+
+        function setPenSize(size, btnEl) {
+            currentPenSize = size;
+            document.querySelectorAll('.size-pill').forEach(p => p.classList.remove('selected'));
+            if (btnEl) btnEl.classList.add('selected');
+        }
+
+        function undoLastStroke() {
+            if (strokes.length === 0) {
+                showToast('Não há nenhum traço para desfazer.');
+                return;
+            }
+            strokes.pop();
+            renderAllStrokes();
+            saveStrokes();
+        }
+
+        function toggleDrawingsVisibility() {
+            strokesHidden = !strokesHidden;
+            drawLayer.classList.toggle('hidden-strokes', strokesHidden);
+            const btn = document.getElementById('toggleVisBtn');
+            btn.textContent = strokesHidden ? '👁️ Mostrar traços' : '👁️ Ocultar traços';
+        }
+
+        function showClearDrawConfirm() {
+            document.getElementById('clearDrawConfirm').classList.add('show');
+        }
+        function hideClearDrawConfirm() {
+            document.getElementById('clearDrawConfirm').classList.remove('show');
+        }
+        function confirmClearDrawings() {
+            strokes = [];
+            renderAllStrokes();
+            saveStrokes();
+            hideClearDrawConfirm();
+            showToast('🧹 Todos os desenhos e grifos da Aula 28 foram apagados.');
+        }
+
+        // =========================================================================
+        // 4. SISTEMA DE OBSERVAÇÕES AUTO-SALVAS (LOCALSTORAGE + FALLBACK COOKIES)
+        // =========================================================================
+        const saveTimers = {};
+
+        function saveValue(key, val) {
+            const fullKey = STORAGE_PREFIX + key;
+            try {
+                window.localStorage.setItem(fullKey, val);
+            } catch (e) {
+                try {
+                    const encoded = encodeURIComponent(val.slice(0, 1500));
+                    document.cookie = `${fullKey}=${encoded}; max-age=31536000; path=/; SameSite=Lax`;
+                } catch (err) {
+                    console.warn('Armazenamento indisponível:', err);
+                }
+            }
+        }
+
+        function loadValue(key) {
+            const fullKey = STORAGE_PREFIX + key;
+            try {
+                const stored = window.localStorage.getItem(fullKey);
+                if (stored !== null) return stored;
+            } catch (e) {}
+            try {
+                const match = document.cookie.match(new RegExp('(?:^|; )' + fullKey.replace(/[.$?*|{}()[\]\\/+^]/g, '\\$&') + '=([^;]*)'));
+                return match ? decodeURIComponent(match[1]) : '';
+            } catch (e) {
+                return '';
+            }
+        }
+
+        function deleteValue(key) {
+            const fullKey = STORAGE_PREFIX + key;
+            try { window.localStorage.removeItem(fullKey); } catch (e) {}
+            try { document.cookie = `${fullKey}=; max-age=0; path=/; SameSite=Lax`; } catch (e) {}
+        }
+
+        function syncNoteMirror(textarea) {
+            const id = textarea.id;
+            const mirror = document.getElementById('mirror_' + id);
+            const wrapper = document.querySelector(`[data-obs-wrapper="${id}"]`);
+            const text = textarea.value.trim();
+
+            if (mirror) mirror.textContent = textarea.value;
+            if (wrapper) {
+                if (text.length > 0) {
+                    wrapper.classList.add('has-note');
+                    wrapper.classList.remove('empty-note');
+                } else {
+                    wrapper.classList.remove('has-note');
+                    wrapper.classList.add('empty-note');
+                }
+            }
+        }
+
+        function updateNotesSummary() {
+            const textareas = document.querySelectorAll('.obs-textarea');
+            let filled = 0;
+            textareas.forEach(ta => {
+                if (ta.value.trim().length > 0) filled++;
+            });
+            const el = document.getElementById('notesSummary');
+            if (el) {
+                el.textContent = `Salvo automaticamente (${filled}/${textareas.length} observações · ${strokes.length} traços da caneta)`;
+            }
+        }
+
+        function initPersistentFields() {
+            document.querySelectorAll('.obs-textarea').forEach(ta => {
+                const saved = loadValue(ta.id);
+                if (saved) ta.value = saved;
+                syncNoteMirror(ta);
+
+                ta.addEventListener('input', () => {
+                    saveValue(ta.id, ta.value);
+                    syncNoteMirror(ta);
+                    updateNotesSummary();
+                    syncSvgSize();
+
+                    const badge = document.getElementById('badge_' + ta.id);
+                    if (badge) {
+                        badge.classList.add('visible');
+                        clearTimeout(saveTimers[ta.id]);
+                        saveTimers[ta.id] = setTimeout(() => {
+                            badge.classList.remove('visible');
+                        }, 1800);
+                    }
+                });
+            });
+
+            document.querySelectorAll('.exercise-input').forEach(inp => {
+                const saved = loadValue(inp.id);
+                if (saved) inp.value = saved;
+                inp.addEventListener('input', () => saveValue(inp.id, inp.value));
+            });
+
+            loadStrokes();
+            updateNotesSummary();
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('statusToast');
+            toast.textContent = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3500);
+        }
+
+        function printWithNotes() {
+            closePenDock();
+            document.querySelectorAll('.obs-textarea').forEach(syncNoteMirror);
+            syncSvgSize();
+            window.print();
+        }
+
+        function exportNotesTxt() {
+            const lines = [];
+            lines.push('=====================================================');
+            lines.push('MÉTODO IPA - MINHAS ANOTAÇÕES DA AULA 28');
+            lines.push('Tema: O Que Teria Sido Diferente? – Condicional Tipo 3');
+            lines.push('=====================================================\n');
+
+            let hasAny = false;
+            document.querySelectorAll('.obs-textarea').forEach(ta => {
+                const val = ta.value.trim();
+                if (val) {
+                    hasAny = true;
+                    const secName = ta.getAttribute('data-section-name') || ta.id;
+                    lines.push(`--- ${secName} ---`);
+                    lines.push(val + '\n');
+                }
+            });
+
+            if (!hasAny) {
+                showToast('Você ainda não escreveu nenhuma observação para exportar.');
+                return;
+            }
+
+            const blob = new Blob([lines.join('\n')], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'minhas_observacoes_aula28.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast('✅ Arquivo "minhas_observacoes_aula28.txt" baixado com sucesso!');
+        }
+
+        function showClearConfirm() {
+            document.getElementById('clearConfirmBox').classList.add('show');
+        }
+        function hideClearConfirm() {
+            document.getElementById('clearConfirmBox').classList.remove('show');
+        }
+
+        function confirmClearAll() {
+            document.querySelectorAll('.obs-textarea').forEach(ta => {
+                ta.value = '';
+                deleteValue(ta.id);
+                syncNoteMirror(ta);
+            });
+            document.querySelectorAll('.exercise-input').forEach(inp => {
+                inp.value = '';
+                deleteValue(inp.id);
+            });
+            strokes = [];
+            renderAllStrokes();
+            saveStrokes();
+            updateNotesSummary();
+            hideClearConfirm();
+            showToast('🗑️ Todas as observações, respostas e desenhos da Aula 28 foram limpos.');
+        }
+
+        // =========================================================================
+        // 5. QUIZ INTERATIVO
+        // =========================================================================
+        function checkQuiz(button, isCorrect, qId, explanation) {
+            const parent = button.parentElement;
+            const buttons = parent.querySelectorAll('.quiz-btn');
+            buttons.forEach(btn => btn.disabled = true);
+
+            const feedback = document.getElementById('feedback-' + qId);
+            feedback.style.display = 'block';
+
+            if (isCorrect) {
+                button.classList.add('correct');
+                feedback.innerHTML = '✅ ' + explanation;
+                feedback.style.background = '#dcfce7';
+                feedback.style.color = '#14532d';
+            } else {
+                button.classList.add('incorrect');
+                buttons.forEach(btn => {
+                    if (btn.getAttribute('onclick').includes('true')) {
+                        btn.classList.add('correct');
+                    }
+                });
+                feedback.innerHTML = '❌ ' + explanation;
+                feedback.style.background = '#fee2e2';
+                feedback.style.color = '#7f1d1d';
+            }
+            syncSvgSize();
+        }
+
+        // =========================================================================
+        // 6. SINTETIZADOR DE VOZ NATIVO (WEB SPEECH API)
+        // =========================================================================
         let voices = [];
+        let isStoryPlaying = false;
+
         function loadVoices() {
-            voices = window.speechSynthesis.getVoices();
+            if ('speechSynthesis' in window) {
+                voices = window.speechSynthesis.getVoices();
+            }
         }
         loadVoices();
-        if (window.speechSynthesis.onvoiceschanged !== undefined) {
+        if ('speechSynthesis' in window && window.speechSynthesis.onvoiceschanged !== undefined) {
             window.speechSynthesis.onvoiceschanged = loadVoices;
         }
 
-        function playAudio(text) {
-            if ('speechSynthesis' in window) {
-                window.speechSynthesis.cancel();
-                const utterance = new SpeechSynthesisUtterance(text);
-                utterance.rate = 0.85;
-                if (voices.length === 0) loadVoices();
-                const targetVoice = voices.find(voice => 
-                    (voice.name.includes('Google') || voice.name.includes('Premium') || voice.name.includes('Samantha')) 
-                    && voice.lang.includes('en-US')
-                ) || voices.find(voice => voice.lang === 'en-US');
-                if (targetVoice) utterance.voice = targetVoice;
-                window.speechSynthesis.speak(utterance);
-            } else {
-                alert("Áudio não suportado.");
+        function getBestVoice() {
+            if (voices.length === 0) loadVoices();
+            return voices.find(v => /^en(-|_)/i.test(v.lang) && /Google|Premium|Samantha|Microsoft|Natural/i.test(v.name))
+                || voices.find(v => v.lang === 'en-US')
+                || voices.find(v => v.lang.startsWith('en'));
+        }
+
+        function resetStoryButton() {
+            isStoryPlaying = false;
+            const btn = document.getElementById('storyAudioBtn');
+            if (btn) {
+                btn.textContent = '🔊 Ouvir História Completa';
+                btn.classList.remove('stop');
             }
+        }
+
+        function playAudio(text) {
+            if (!('speechSynthesis' in window)) {
+                showToast('⚠️ Seu navegador não oferece leitura de áudio nativa. Use Chrome, Safari ou Edge.');
+                return;
+            }
+            window.speechSynthesis.cancel();
+            resetStoryButton();
+
+            const u = new SpeechSynthesisUtterance(text);
+            u.rate = 0.86;
+            u.pitch = 1;
+            const target = getBestVoice();
+            if (target) {
+                u.voice = target;
+                u.lang = target.lang;
+            } else {
+                u.lang = 'en-US';
+            }
+            window.speechSynthesis.speak(u);
+        }
+
+        function playSentenceAudio(idx) {
+            const item = practiceSentences[idx];
+            const audioText = item[4] ? item[4] : item[0].replace(/<\/?b>/g, '');
+            playAudio(audioText);
+        }
+
+        function playVocabAudio(idx) {
+            const item = vocabWords[idx];
+            const audioText = item[4] ? item[4] : item[0];
+            playAudio(audioText);
+        }
+
+        function toggleStoryAudio() {
+            if (!('speechSynthesis' in window)) {
+                showToast('⚠️ Seu navegador não oferece leitura de áudio nativa. Use Chrome, Safari ou Edge.');
+                return;
+            }
+            if (isStoryPlaying) {
+                window.speechSynthesis.cancel();
+                resetStoryButton();
+                return;
+            }
+
+            window.speechSynthesis.cancel();
+            isStoryPlaying = true;
+            const btn = document.getElementById('storyAudioBtn');
+            btn.textContent = '⏹ Parar Leitura da História';
+            btn.classList.add('stop');
+
+            const u = new SpeechSynthesisUtterance(fullStoryText);
+            u.rate = 0.85;
+            u.pitch = 1;
+            const target = getBestVoice();
+            if (target) {
+                u.voice = target;
+                u.lang = target.lang;
+            } else {
+                u.lang = 'en-US';
+            }
+            u.onend = resetStoryButton;
+            u.onerror = resetStoryButton;
+            window.speechSynthesis.speak(u);
+        }
+
+        // INICIALIZAÇÃO E MONITORAMENTO DE TAMANHO DO LIVRO PARA A CAMADA SVG
+        renderSentencesTable();
+        renderVocabGrid();
+        initPersistentFields();
+        syncSvgSize();
+
+        window.addEventListener('resize', syncSvgSize);
+        if ('ResizeObserver' in window) {
+            const ro = new ResizeObserver(() => syncSvgSize());
+            ro.observe(lessonBook);
         }
     </script>
 </body>
